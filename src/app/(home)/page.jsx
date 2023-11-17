@@ -1,7 +1,5 @@
-import React from 'react'
-
+import React from "react";
+import Home from "@/app/components/home/home";
 export default function page() {
-  return (
-    <div className='w-full h-full flex-row items-center justify-center'>page</div>
-  )
+  return <Home />;
 }
