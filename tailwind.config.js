@@ -7,6 +7,9 @@ module.exports = {
 	],
 	theme: {
 		extend: {
+			FontFace:{
+				"Hacen-Tunisia":"Hacen Tunisia"
+			},
 			colors: {
 				transparent: "transparent",
 				current: "currentColor",
@@ -20,6 +23,7 @@ module.exports = {
 				textLight: "#d9d9d9",
 				cardDark: "#363636",
 				darkModeSecondary: "#141414",
+				caderSection:"#F4F6F5"
 			},
 		},
 	},
