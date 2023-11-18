@@ -1,152 +1,132 @@
-
-import TitleSection from '../titleSection'
-import CardProject from './cardProject'
-import { Navigation, A11y } from 'swiper';
-import { Swiper, SwiperSlide } from 'swiper/react';
+import TitleSection from "../titleSection";
+import CardProject from "./cardProject";
+import { Navigation, A11y } from "swiper";
+import { Swiper, SwiperSlide } from "swiper/react";
 // Import Swiper styles
-import 'swiper/css';
-import 'swiper/css/navigation';
-import { useEffect, useState } from 'react';
-export default function Project({textAlign,widthContainer}) {
-    const [widthScreen, setWidthScreen] = useState(globalThis.innerWidth)
-    useEffect(() => {
-        globalThis.addEventListener("resize", () => {
-            setWidthScreen(() => globalThis.innerWidth)
-        })
-        return () => globalThis.removeEventListener("resize", () => { })
-    }, [])
-    return (
-			<div className="w-full h-full flex flex-col items-center gap-5">
-				<TitleSection
-					title={"Projects"}
-					subTitle={"Things I’ve built so far"}
-					textAlign={textAlign}
-				/>
-				<div className="w-full h-full flex justify-around">
-					{widthScreen >= 768 ? (
-						<div className="w-full h-full flex flex-col items-center gap-5">
-							<div className={`${widthContainer} h-fit flex gap-y-5 justify-between`}>
-								<CardProject
-									img={"/img/Rectangle 4.png"}
-									title={"المنتج"}
-									description={"lorem ipsum sdssdfka;sdlfkjldskjf"}
-									colors={["bg-green-500", "bg-blue-500", "bg-red-500", "bg-yellow-500"]}
-									url={""}
-									urlGithub={""}
-								/>
-								<CardProject
-									img={"/img/Rectangle 6.png"}
-									title={"المنتج"}
-									description={"lorem ipsum sdssdfka;sdlfkjldskjf"}
-									colors={["bg-green-500", "bg-blue-500", "bg-red-500", "bg-yellow-500"]}
-									url={""}
-									urlGithub={""}
-								/>
-								<CardProject
-									img={"/img/Rectangle 8.png"}
-									title={"المنتج"}
-									description={"lorem ipsum sdssdfka;sdlfkjldskjf"}
-									colors={["bg-green-500", "bg-blue-500", "bg-red-500", "bg-yellow-500"]}
-									url={""}
-									urlGithub={""}
-								/>
-							</div>
-							<div className={`${widthContainer} flex gap-y-5 justify-between`}>
-								<CardProject
-									img={"/img/Rectangle 12.png"}
-									title={"المنتج"}
-									description={"lorem ipsum sdssdfka;sdlfkjldskjf"}
-									colors={["bg-green-500", "bg-blue-500", "bg-red-500", "bg-yellow-500"]}
-									url={""}
-									urlGithub={""}
-								/>
-								<CardProject
-									img={"/img/Rectangle 13.png"}
-									title={"المنتج"}
-									description={"lorem ipsum sdssdfka;sdlfkjldskjf"}
-									colors={["bg-green-500", "bg-blue-500", "bg-red-500", "bg-yellow-500"]}
-									url={""}
-									urlGithub={""}
-								/>
-								<CardProject
-									img={"/img/Rectangle 14.png"}
-									title={"المنتج"}
-									description={"lorem ipsum sdssdfka;sdlfkjldskjf"}
-									colors={["bg-green-500", "bg-blue-500", "bg-red-500", "bg-yellow-500"]}
-									url={""}
-									urlGithub={""}
-								/>
-							</div>
-						</div>
-					) : (
-						<Swiper
-							modules={[Navigation, A11y]}
-							spaceBetween={10}
-							slidesPerView={widthScreen < 640 ? 1 : 2}
-						>
-							<SwiperSlide className="content-center flex justify-center">
-								<CardProject
-									img={"/img/Rectangle 4.png"}
-									title={"المنتج"}
-									description={"lorem ipsum sdssdfka;sdlfkjldskjf"}
-									colors={["bg-green-500", "bg-blue-500", "bg-red-500", "bg-yellow-500"]}
-									url={""}
-									urlGithub={""}
-								/>
-							</SwiperSlide>
-							<SwiperSlide className="content-center flex justify-center">
-								<CardProject
-									img={"/img/Rectangle 6.png"}
-									title={"المنتج"}
-									description={"lorem ipsum sdssdfka;sdlfkjldskjf"}
-									colors={["bg-green-500", "bg-blue-500", "bg-red-500", "bg-yellow-500"]}
-									url={""}
-									urlGithub={""}
-								/>
-							</SwiperSlide>
-							<SwiperSlide className="content-center flex justify-center">
-								<CardProject
-									img={"/img/Rectangle 8.png"}
-									title={"المنتج"}
-									description={"lorem ipsum sdssdfka;sdlfkjldskjf"}
-									colors={["bg-green-500", "bg-blue-500", "bg-red-500", "bg-yellow-500"]}
-									url={""}
-									urlGithub={""}
-								/>
-							</SwiperSlide>
-							<SwiperSlide className="content-center flex justify-center">
-								<CardProject
-									img={"/img/Rectangle 12.png"}
-									title={"المنتج"}
-									description={"lorem ipsum sdssdfka;sdlfkjldskjf"}
-									colors={["bg-green-500", "bg-blue-500", "bg-red-500", "bg-yellow-500"]}
-									url={""}
-									urlGithub={""}
-								/>
-							</SwiperSlide>
-							<SwiperSlide className="content-center flex justify-center">
-								<CardProject
-									img={"/img/Rectangle 13.png"}
-									title={"المنتج"}
-									description={"lorem ipsum sdssdfka;sdlfkjldskjf"}
-									colors={["bg-green-500", "bg-blue-500", "bg-red-500", "bg-yellow-500"]}
-									url={""}
-									urlGithub={""}
-								/>
-							</SwiperSlide>
-							<SwiperSlide className="content-center flex justify-center">
-								<CardProject
-									img={"/img/Rectangle 14.png"}
-									title={"المنتج"}
-									description={"lorem ipsum sdssdfka;sdlfkjldskjf"}
-									colors={["bg-green-500", "bg-blue-500", "bg-red-500", "bg-yellow-500"]}
-									url={""}
-									urlGithub={""}
-								/>
-							</SwiperSlide>
-						</Swiper>
-					)}
-				</div>
-			</div>
-		);
+import "swiper/css";
+import "swiper/css/navigation";
+import { useEffect, useState } from "react";
+export default function Project({ textAlign, widthContainer }) {
+  const [widthScreen, setWidthScreen] = useState(globalThis.innerWidth);
+  useEffect(() => {
+    globalThis.addEventListener("resize", () => {
+      setWidthScreen(() => globalThis.innerWidth);
+    });
+    return () => globalThis.removeEventListener("resize", () => {});
+  }, []);
+  return (
+    <div className="w-full h-full flex flex-col items-center gap-5">
+      <div className="w-[90%]">
+        <TitleSection
+          title={"المنتوجات"}
+          subTitle={"Things I’ve built so far"}
+        />
+      </div>
+      <div className="w-full h-full flex justify-center">
+        <div className="w-[90%] h-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 justify-items-center gap-5">
+          <CardProject
+            img={"/img/Rectangle 4.png"}
+            title={"المنتج"}
+            colors={[
+              "bg-green-500",
+              "bg-blue-500",
+              "bg-red-500",
+              "bg-yellow-500",
+            ]}
+            sizes={["bg", "bg", "bg", "bg"]}
+            url={""}
+            urlGithub={""}
+          />
+          <CardProject
+            img={"/img/Rectangle 6.png"}
+            title={"المنتج"}
+            colors={[
+              "bg-green-500",
+              "bg-blue-500",
+              "bg-red-500",
+              "bg-yellow-500",
+            ]}
+            sizes={["100 مل", "100 مل", "100 مل", "100 مل"]}
+            url={""}
+            urlGithub={""}
+          />
+          <CardProject
+            img={"/img/Rectangle 8.png"}
+            title={"المنتج"}
+            colors={[
+              "bg-green-500",
+              "bg-blue-500",
+              "bg-red-500",
+              "bg-yellow-500",
+            ]}
+            sizes={["bg", "bg", "bg", "bg"]}
+            url={""}
+            urlGithub={""}
+          />
+        </div>
+      </div>
+      <div>
+        <nav
+          className="isolate inline-flex -space-x-px rounded-md shadow-sm"
+          aria-label="Pagination"
+        >
+          <a
+            href="#"
+            className="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+          >
+            <span className="sr-only">Previous</span>
+            {/* <ChevronLeftIcon className="h-5 w-5" aria-hidden="true" /> */}
+          </a>
+          {/* Current: "z-10 bg-indigo-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600", Default: "text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0" */}
+          <a
+            href="#"
+            aria-current="page"
+            className="relative z-10 inline-flex items-center bg-indigo-600 px-4 py-2 text-sm font-semibold text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          >
+            1
+          </a>
+          <a
+            href="#"
+            className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+          >
+            2
+          </a>
+          <a
+            href="#"
+            className="relative hidden items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 md:inline-flex"
+          >
+            3
+          </a>
+          <span className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-700 ring-1 ring-inset ring-gray-300 focus:outline-offset-0">
+            ...
+          </span>
+          <a
+            href="#"
+            className="relative hidden items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 md:inline-flex"
+          >
+            8
+          </a>
+          <a
+            href="#"
+            className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+          >
+            9
+          </a>
+          <a
+            href="#"
+            className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+          >
+            10
+          </a>
+          <a
+            href="#"
+            className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+          >
+            <span className="sr-only">Next</span>
+            {/* <ChevronRightIcon className="h-5 w-5" aria-hidden="true" /> */}
+          </a>
+        </nav>
+      </div>
+    </div>
+  );
 }

@@ -23,7 +23,8 @@ module.exports = {
 				textLight: "#d9d9d9",
 				cardDark: "#363636",
 				darkModeSecondary: "#141414",
-				caderSection:"#F4F6F5"
+				caderSection:"#F4F6F5",
+				mainColor:"#FF4A4A"
 			},
 		},
 	},
