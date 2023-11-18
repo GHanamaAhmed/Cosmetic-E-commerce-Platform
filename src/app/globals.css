@@ -45,6 +45,6 @@ body {
   transition: transform 0.2s linear;
 }
 .swiper-slide {
-    padding: 5px;
-  width:fit-content !important;
+  padding: 5px;
+  width: fit-content !important;
 }

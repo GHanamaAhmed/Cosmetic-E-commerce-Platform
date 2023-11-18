@@ -26,7 +26,7 @@ export default memo(function Header({ onHandleMenu }) {
   };
   return (
     <header
-      className={`w-full fixed bg- z-50 bg-white ${headerPosition} duration-500 flex items-center justify-around py-2`}
+      className={`w-full fixed bg- z-50 bg-white ${headerPosition} duration-500 flex-row-reverse flex items-center justify-around py-2`}
     >
       <img src="./img/logo 1.svg" alt="icon" />
       <div
@@ -45,7 +45,7 @@ export default memo(function Header({ onHandleMenu }) {
         ></div>
         <div className="h-1 w-6 rounded-lg bg-darkMode "></div>
       </div>
-      <div className="md:flex justify-between items-center gap-10 hidden">
+      <div className="md:flex md:flex-row-reverse justify-between items-center gap-10 hidden">
         <NavBarPages />
         <ul className="flex justify-between items-center gap-3">
           <Contact />
