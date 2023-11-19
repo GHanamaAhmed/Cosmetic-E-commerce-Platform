@@ -5,6 +5,6 @@ export default function page() {
     const route = usePathname() 
      const product = route.replace('/products/','')
   return (
-    <div>page {product}</div>
+    <div className='flex flex-col justify-center items-center text-center'>page {product}</div>
   )
 }
