@@ -57,7 +57,7 @@ export default function CardProject({
 					onSwiper={(swiper) => setSwiper(swiper)}
 				>
 					{sizes.map((size, index) => (
-						<SwiperSlide key={index}>
+						<SwiperSlide className="swiper-card " key={index}>
 							<button
 								onClick={() => setselectedSize(index)}
 								className={`${
@@ -96,7 +96,7 @@ export default function CardProject({
 						onSwiper={(swiper) => console.log(swiper)}
 					>
 						{colors.map((color, index) => (
-							<SwiperSlide>
+							<SwiperSlide className="swiper-card ">
 								<button
 									onClick={() => setselectedColor(index)}
 									key={index}

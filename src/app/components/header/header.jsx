@@ -2,6 +2,7 @@
 import { memo, useEffect, useLayoutEffect, useState } from "react";
 import Contact from "./contact";
 import NavBarPages from "./navBarPages";
+import Image from "next/image";
 export default memo(function Header({ onHandleMenu }) {
   const [isMenuActive, setIsMenuActive] = useState(false);
   const [positionScroll, setPositinScroll] = useState(globalThis.screenY);
@@ -28,7 +29,9 @@ export default memo(function Header({ onHandleMenu }) {
     <header
       className={`w-full fixed bg- z-50 bg-white ${headerPosition} duration-500 flex-row-reverse flex items-center justify-around py-2`}
     >
-      <img src="./img/logo 1.svg" alt="icon" />
+      <div className="w-[97px] h-[59px] inline-block relative">
+        <Image className="-z-10" src="/img/logo 1.svg" fill alt="logo" />
+      </div>
       <div
         className="flex flex-col items-center gap-1 cursor-pointer md:hidden"
         onClick={handleMenu}

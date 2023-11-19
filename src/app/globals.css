@@ -44,7 +44,15 @@ body {
   border-radius: 50%;
   transition: transform 0.2s linear;
 }
-.swiper-slide {
+.swiper-card {
   padding: 5px;
   width: fit-content !important;
+  margin-top: 0 !important;
 }
+.swiper-product{
+  padding: 5px;
+  height: fit-content !important;
+  width: fit-content !important;
+  margin-top: 0 !important;
+}
+.swiper-wrapper{}
