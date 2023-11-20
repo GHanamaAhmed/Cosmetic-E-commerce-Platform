@@ -2,7 +2,7 @@ import React from 'react'
 
 export default function ClientINfo() {
   return (
-		<div className="flex flex-col w-full h-full px-18 gap-10">
+		<div className="w-full h-full flex flex-col  gap-10">
 			<div className="w-full h-full flex  justify-between gap-2 ">
 				<input
 					type="text"
@@ -18,7 +18,7 @@ export default function ClientINfo() {
 			<input
 				type="tel"
 				placeholder="رقم الهاتف"
-				className="border-2 border-orange-500 focus:outline-blue-500 rounded-md border-spacing-2 p-1"
+				className="border-2 border-orange-500 focus:outline-blue-500  text-right rounded-md border-spacing-2 p-1"
 			/>
 			<input
 				type="email"
