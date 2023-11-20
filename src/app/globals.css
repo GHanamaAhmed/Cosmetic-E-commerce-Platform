@@ -51,8 +51,19 @@ body {
 }
 .swiper-product{
   padding: 5px;
-  height: fit-content !important;
   width: fit-content !important;
   margin-top: 0 !important;
 }
-.swiper-wrapper{}
+.swiper-grid {
+  display: grid !important;
+  grid-template-columns: auto auto !important; /* Two columns */
+  grid-template-rows: auto auto !important; 
+  gap: 10px !important; /* Gap between grid items */
+  height: 100% !important;
+  width: 100% !important;
+}
+@media (max-width: 767px) {
+  .swiper-grid {
+    display: block !important;
+  }
+}
