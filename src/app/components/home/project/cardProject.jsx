@@ -2,7 +2,7 @@ import Link from "next/link";
 import React, { useState } from "react";
 import { FiShoppingCart } from "react-icons/fi";
 import { Swiper, SwiperSlide, useSwiper } from "swiper/react";
-import { A11y, Navigation, Pagination } from "swiper";
+import { A11y, Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 import { GrFormNextLink, GrLinkNext, GrLinkPrevious, GrPrevious } from "react-icons/gr";
@@ -57,7 +57,7 @@ export default function CardProject({
 					onSwiper={(swiper) => setSwiper(swiper)}
 				>
 					{sizes.map((size, index) => (
-						<SwiperSlide key={index}>
+						<SwiperSlide className="swiper-card " key={index}>
 							<button
 								onClick={() => setselectedSize(index)}
 								className={`${
@@ -96,7 +96,7 @@ export default function CardProject({
 						onSwiper={(swiper) => console.log(swiper)}
 					>
 						{colors.map((color, index) => (
-							<SwiperSlide>
+							<SwiperSlide key={index} className="swiper-card ">
 								<button
 									onClick={() => setselectedColor(index)}
 									key={index}
