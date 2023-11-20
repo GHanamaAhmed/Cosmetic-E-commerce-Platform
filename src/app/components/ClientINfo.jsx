@@ -44,13 +44,12 @@ export default function ClientINfo() {
 				id="wilaya"
 				className="border-2 border-orange-500 focus:outline-blue-500 rounded-md border-spacing-2 p-1 text-lightContent"
 			>
-				<option value="" disabled selected className="bg-lightContent">
+				<option value="" disabled selected hidden className="bg-lightContent">
 					البلدية
 				</option>
 				<option value="adrar"> ادرار</option>
 				<option value="algiers">الجزائر</option>
 				<option value="oran"> وهران</option>
-				<option value="null"> </option>
 			</select>
 		</div>
 	);
