@@ -4,9 +4,9 @@ import ProductINfo from './ProductINfo'
 
 export default function Payment() {
   return (
-		<div className="w-10/12 h-full flex flex-row justify-between items-center gap-16 mb-10">
-			<ProductINfo />
-			<ClientINfo />
+		<div className="w-10/12 grid grid-cols-1 gap-3 md:grid-cols-2">
+			<ProductINfo /> 
+			<ClientINfo /> 
 		</div>
 	);
 }
