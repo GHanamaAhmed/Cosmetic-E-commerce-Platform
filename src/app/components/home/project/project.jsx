@@ -64,7 +64,7 @@ export default function Project({ textAlign, widthContainer }) {
           />
         </div>
       </div>
-      <div>
+      <div className="mt-10">
         <nav
           className="isolate inline-flex -space-x-px rounded-md shadow-sm"
           aria-label="Pagination"
