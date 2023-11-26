@@ -4,14 +4,15 @@ import Contact from "./contact";
 import NavBarPages from "./navBarPages";
 import Image from "next/image";
 import Basket from "../basket/basket";
+import { SlBasketLoaded } from "react-icons/sl";
 export default memo(function Header() {
-  const [isMenuActive, setIsMenuActive] = useState(false);
+  const [isBasketActive, setIsBasketActive] = useState(false);
   const [positionScroll, setPositinScroll] = useState(globalThis.screenY);
   const [headerPosition, setHeaderPosition] = useState("");
   useEffect(() => {
     const handlePosition = () => {
       if (positionScroll < globalThis.scrollY) {
-        if (isMenuActive == false) {
+        if (isBasketActive == false) {
           setHeaderPosition("-translate-y-full");
         }
       } else {
@@ -23,8 +24,7 @@ export default memo(function Header() {
     return () => globalThis.removeEventListener("scroll", handlePosition);
   }, [positionScroll]);
   const handleMenu = () => {
-    setIsMenuActive((prevValue) => !prevValue);
-    
+    setIsBasketActive((prevValue) => !prevValue);
   };
   return (
     <>
@@ -40,26 +40,28 @@ export default memo(function Header() {
             <Contact />
           </ul>
         </div>
-        <div
-          className="flex flex-col items-center gap-1 cursor-pointer"
-          onClick={handleMenu}
-        >
+        <div className="flex gap-5">
           <div
-            className={`h-1 w-6 rounded-lg bg-darkMode  duration-300 ${
-              isMenuActive ? "-translate-x-4" : ""
-            }`}
-          ></div>
-          <div
-            className={`h-1 w-6 rounded-lg bg-darkMode  duration-300 ${
-              isMenuActive ? "-translate-x-2" : ""
-            }`}
-          ></div>
-          <div className="h-1 w-6 rounded-lg bg-darkMode "></div>
+            className="flex flex-col md:hidden items-center gap-1 cursor-pointer"
+          >
+            <div
+              className={`h-1 w-6 rounded-lg bg-darkMode  duration-300 ${
+                false ? "-translate-x-4" : ""
+              }`}
+            ></div>
+            <div
+              className={`h-1 w-6 rounded-lg bg-darkMode  duration-300 ${
+                false ? "-translate-x-2" : ""
+              }`}
+            ></div>
+            <div className="h-1 w-6 rounded-lg bg-darkMode "></div>
+          </div>
+          <SlBasketLoaded size={20}  onClick={handleMenu}/>
         </div>
       </header>
       <div
         className={`fixed transition-all pt-[80px] w-full md:w-fit lg:4/12 h-full ${
-          isMenuActive ? "" : "translate-x-full"
+          isBasketActive ? "" : "translate-x-full"
         } z-10 right-0 bg-white shadow-sm top-0`}
       >
         <Basket />
