@@ -4,20 +4,15 @@ export default function NavBarPages() {
     return (
 			<ul className="flex md:flex-row-reverse justify-between flex-col items-start md:items-center my-4 md:my-0 px-3 md:px-0 w-fit gap-4 md:gap-10">
 				<li className="dark:text-darkContent text-lightContent cursor-pointer">
-					<Link href={"/Portfilo/"}>Home</Link>
+					<Link href={"/"}>Home</Link>
 				</li>
 				<li className="dark:text-darkContent text-lightContent cursor-pointer">
-					<Link href={"/Portfilo/about"}>About</Link>
+					<Link href={"/users/1"}>User</Link>
 				</li>
 				<li className="dark:text-darkContent text-lightContent cursor-pointer">
-					<Link href={"/Portfilo/tech-stack"}>Tech Stack</Link>
+					<Link href={"/orders"}>history</Link>
 				</li>
-				<li className="dark:text-darkContent text-lightContent cursor-pointer">
-					<Link href={"/Portfilo/projects"}>Project</Link>
-				</li>
-				<li className="dark:text-darkContent text-lightContent cursor-pointer">
-					<Link href={"/Portfilo/contact"}>Contact</Link>
-				</li>
+
 			</ul>
 		);
 }
