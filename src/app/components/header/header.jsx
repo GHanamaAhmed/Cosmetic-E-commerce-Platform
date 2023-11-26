@@ -24,6 +24,7 @@ export default memo(function Header() {
   }, [positionScroll]);
   const handleMenu = () => {
     setIsMenuActive((prevValue) => !prevValue);
+    
   };
   return (
     <>
@@ -33,7 +34,6 @@ export default memo(function Header() {
         <div className="w-[97px] h-[59px] inline-block relative">
           <Image className="-z-10" src="/img/logo 1.svg" fill alt="logo" />
         </div>
-
         <div className="md:flex md:flex-row-reverse justify-between items-center gap-10 hidden">
           <NavBarPages />
           <ul className="flex justify-between items-center gap-3">
