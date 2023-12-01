@@ -22,8 +22,8 @@ export default function CardProject({
   photos,
 }) {
   const [swiper, setSwiper] = useState(null);
-  const [selectedColor, setselectedColor] = useState();
-  const [selectedSize, setselectedSize] = useState();
+  const [selectedColor, setselectedColor] = useState(-1);
+  const [selectedSize, setselectedSize] = useState(-1);
   const swiper2 = useSwiper();
   const { width } = useWidth();
   const handleNextClick = () => {
@@ -49,12 +49,14 @@ export default function CardProject({
               }}
               modules={[Pagination, Autoplay]}
             >
-              {photos?.map((img, index) => (
+              {photos?.map((e, index) => (
                 <SwiperSlide key={index} className="w-full h-full">
                   <img
                     crossOrigin="anonymous"
                     className="h-full w-full object-cover"
-                    src={img}
+                    src={
+                      e?.photos?.[Math.floor(Math.random() * e?.photos?.length)]
+                    }
                     alt=""
                   />
                 </SwiperSlide>
@@ -75,20 +77,22 @@ export default function CardProject({
           onSlideChange={() => console.log("slide change")}
           onSwiper={(swiper) => setSwiper(swiper)}
         >
-          {[""].map((size, index) => (
-            <SwiperSlide className="swiper-card " key={index}>
-              <button
-                onClick={() => setselectedSize(index)}
-                className={`${
-                  index == selectedSize
-                    ? "border-none bg-mainColor text-white"
-                    : "border-mainColor border-[1.5px]"
-                }  font-medium  active:border-none active:bg-mainColor active:text-white p-1 m-1 rounded-sm`}
-              >
-                {size}
-              </button>
-            </SwiperSlide>
-          ))}
+          {photos
+            .filter((_, index) => index == selectedColor)?.[0]
+            ?.sizes?.map((size, index) => (
+              <SwiperSlide className="swiper-card " key={index}>
+                <button
+                  onClick={() => setselectedSize(index)}
+                  className={`${
+                    index == selectedSize
+                      ? "border-none bg-mainColor text-white"
+                      : "border-mainColor border-[1.5px]"
+                  }  font-medium  active:border-none active:bg-mainColor active:text-white p-1 m-1 rounded-sm`}
+                >
+                  {size}
+                </button>
+              </SwiperSlide>
+            ))}
         </Swiper>
         <div className="flex w-full justify-normal gap-4 items-center">
           <p className="inline font-semibold text-solidHeading">الالوان: </p>
@@ -100,14 +104,15 @@ export default function CardProject({
             onSlideChange={() => console.log("slide change")}
             onSwiper={(swiper) => console.log(swiper)}
           >
-            {[""].map((color, index) => (
+            {photos.map((e, index) => (
               <SwiperSlide key={index} className="swiper-card ">
                 <button
                   onClick={() => setselectedColor(index)}
                   key={index}
-                  className={`rounded-full shadow-[inset_-0.5px_0.5px_3px_0px_#1a202c] ${
+                  style={{ backgroundColor: e?.color }}
+                  className={`rounded-full  ${
                     selectedColor == index ? "ring-4" : ""
-                  } z-50 w-6 h-6 ${color}`}
+                  } z-50 w-6 h-6`}
                 ></button>
               </SwiperSlide>
             ))}
