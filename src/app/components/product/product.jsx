@@ -18,13 +18,7 @@ const sizes = [
   "455",
   "كبير",
   "100 ml",
-  "455",
-  "كبير",
-  "100 ml",
-  "455",
-  "كبير",
-  "100 ml",
-  "455",
+
 ];
 const colors = ["bg-green-500", "bg-blue-500", "bg-red-500", "bg-yellow-500"];
 const numImage = 10;

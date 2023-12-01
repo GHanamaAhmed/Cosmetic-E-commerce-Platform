@@ -1,18 +1,77 @@
+"use client";
 import TitleSection from "../titleSection";
 import CardProject from "./cardProject";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { Axios } from "@/app/libs/axios";
 export default function Project({ textAlign, widthContainer }) {
-  const [widthScreen, setWidthScreen] = useState(globalThis.innerWidth);
+  const scrollContainerRef = useRef(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [products, setProducts] = useState([]);
+  const [min, setMin] = useState(0);
+  const [count, setCount] = useState(0);
+  const [types, setTypes] = useState([]);
+  const [type, setType] = useState("الكل");
+  const [input, setInput] = useState("");
+  const fetch = async (e) => {
+    if (e) {
+      await Axios.get(
+        `/products?min=${0}&max=${8}${
+          input.length > 0 ? `&name=${input}` : ""
+        }${type != "الكل" ? `&type=${type}` : ""}`
+      )
+        .then((res) => {
+          setIsLoading(false);
+          console.log(res.data);
+          setProducts((prev) => [...res.data.products]);
+          setMin(res.data.products?.length);
+          setTypes(res.data?.types);
+          setCount(res.data?.count);
+        })
+        .catch((err) => {
+          console.error(err);
+          setIsLoading(false);
+        });
+    } else {
+      await customAxios
+        .get(
+          `/products?min=${min}&max=${min + 8}${
+            input.length > 0 ? `&name=${input}` : ""
+          }${type != "الكل" ? `&type=${type}` : ""}`
+        )
+        .then((res) => {
+          setIsLoading(false);
+          setProducts((prev) => [...prev, ...res.data.products]);
+          setMin(res.data.products?.length + min);
+          setTypes(res.data?.types);
+          setCount(res.data?.count);
+        })
+        .catch((err) => {
+          console.error(err);
+          setIsLoading(false);
+        });
+    }
+  };
   useEffect(() => {
-    globalThis.addEventListener("resize", () => {
-      setWidthScreen(() => globalThis.innerWidth);
-    });
-    return () => globalThis.removeEventListener("resize", () => {});
-  }, []);
+    fetch(true);
+  }, [type]);
+  const more = (e) => {
+    e.preventDefault();
+    fetch();
+  };
+  const handleScroll = () => {
+    const { scrollTop, clientHeight, scrollHeight } =
+      scrollContainerRef.current;
+    console.log("ggg");
+    // Check if user has scrolled to the bottom
+    if (scrollTop + clientHeight === scrollHeight) {
+      console.log("Reached the bottom!");
+      // Do something when scrolled to the bottom
+    }
+  };
   return (
     <div className="w-full h-full flex flex-col items-center gap-5">
       <div className="w-[90%]">
@@ -22,110 +81,36 @@ export default function Project({ textAlign, widthContainer }) {
         />
       </div>
       <div className="w-full h-full flex justify-center">
-        <div className="w-[90%] h-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 justify-items-center gap-5">
-          <CardProject
-            img={"/img/Rectangle 4.png"}
-            title={"المنتج"}
-            colors={[
-              "bg-green-500",
-              "bg-blue-500",
-              "bg-red-500",
-              "bg-yellow-500",
-            ]}
-            sizes={["bg", "bg", "bg", "bg"]}
-            url={""}
-            urlGithub={""}
-          />
-          <CardProject
-            img={"/img/Rectangle 6.png"}
-            title={"المنتج"}
-            colors={[
-              "bg-green-500",
-              "bg-blue-500",
-              "bg-red-500",
-              "bg-yellow-500",
-            ]}
-            sizes={["100 مل", "100 مل", "100 مل", "100 مل"]}
-            url={""}
-            urlGithub={""}
-          />
-          <CardProject
-            img={"/img/Rectangle 8.png"}
-            title={"المنتج"}
-            colors={[
-              "bg-green-500",
-              "bg-blue-500",
-              "bg-red-500",
-              "bg-yellow-500",
-            ]}
-            sizes={["bg", "bg", "bg", "bg"]}
-            url={""}
-            urlGithub={""}
-          />
-        </div>
-      </div>
-      <div className="mt-10">
-        <nav
-          className="isolate inline-flex -space-x-px rounded-md shadow-sm"
-          aria-label="Pagination"
-        >
-           <a
-            href="#"
-            className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+        {products.length > 0 && (
+          <div
+            ref={scrollContainerRef}
+            onScroll={handleScroll}
+            className="w-[90%] h-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 justify-items-center gap-5"
           >
-            <span className="sr-only">Next</span>
-            <ChevronRightIcon className="h-5 w-5" aria-hidden="true" />
-          </a>
-          
-          {/* Current: "z-10 bg-indigo-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600", Default: "text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0" */}
-          <a
-            href="#"
-            aria-current="page"
-            className="relative z-10 inline-flex items-center bg-indigo-600 px-4 py-2 text-sm font-semibold text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          >
-            1
-          </a>
-          <a
-            href="#"
-            className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
-          >
-            2
-          </a>
-          <a
-            href="#"
-            className="relative hidden items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 md:inline-flex"
-          >
-            3
-          </a>
-          <span className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-700 ring-1 ring-inset ring-gray-300 focus:outline-offset-0">
-            ...
-          </span>
-          <a
-            href="#"
-            className="relative hidden items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 md:inline-flex"
-          >
-            8
-          </a>
-          <a
-            href="#"
-            className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
-          >
-            9
-          </a>
-          <a
-            href="#"
-            className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
-          >
-            10
-          </a>
-          <a
-            href="#"
-            className="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
-          >
-            <span className="sr-only">Previous</span>
-            <ChevronLeftIcon className="h-5 w-5" aria-hidden="true" />
-          </a>
-        </nav>
+            {products.map((e, i) => (
+              <CardProject
+                key={i}
+                id={e?._id}
+                name={e?.name}
+                price={e?.price}
+                promotion={e?.promotion}
+                quntity={e?.quntity}
+                like={e?.isLike}
+                save={e?.isSave}
+                isShowPrice={e?.showPrice}
+                isShowPromotion={e?.showPromotion}
+                thumbanil={e?.thumbanil}
+                status={e?.status}
+                photos={e?.photos}
+              />
+            ))}
+          </div>
+        )}
+        {products.length === 0 && (
+          <div className="flex justify-center items-center w-full h-full">
+            <p className="text-4xl font-bold text-gray-500">لا يوجد منتوجات</p>
+          </div>
+        )}
       </div>
     </div>
   );

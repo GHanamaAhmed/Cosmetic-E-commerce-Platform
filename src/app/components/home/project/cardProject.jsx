@@ -2,24 +2,30 @@ import Link from "next/link";
 import React, { useState } from "react";
 import { FiShoppingCart } from "react-icons/fi";
 import { Swiper, SwiperSlide, useSwiper } from "swiper/react";
-import { A11y, Navigation, Pagination,Autoplay } from "swiper/modules";
+import { A11y, Navigation, Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
-import 'swiper/css/navigation';
+import "swiper/css/navigation";
 import { useWidth } from "@/app/hooks/useWidth";
 export default function CardProject({
-  title,
-  img,
-  colors,
-  sizes,
-  urlGithub,
-  url,
+  id,
+  name,
+  price,
+  promotion,
+  quntity,
+  like,
+  save,
+  isShowPrice,
+  isShowPromotion,
+  thumbanil,
+  status,
+  photos,
 }) {
   const [swiper, setSwiper] = useState(null);
   const [selectedColor, setselectedColor] = useState();
   const [selectedSize, setselectedSize] = useState();
   const swiper2 = useSwiper();
-  const {width}=useWidth()
+  const { width } = useWidth();
   const handleNextClick = () => {
     if (swiper) {
       swiper.slideNext();
@@ -35,16 +41,15 @@ export default function CardProject({
               spaceBetween={10}
               className="w-full h-full"
               pagination={{
-                type: 'progressbar',
+                type: "progressbar",
               }}
               autoplay={{
                 delay: 10000,
                 disableOnInteraction: false,
               }}
-              navigation={width>767?true:false}
-              modules={[Pagination, Navigation,Autoplay]}
+              modules={[Pagination, Autoplay]}
             >
-              {colors.map((color, index) => (
+              {photos?.map((img, index) => (
                 <SwiperSlide key={index} className="w-full h-full">
                   <img
                     crossOrigin="anonymous"
@@ -59,7 +64,7 @@ export default function CardProject({
         </div>
       </div>
       <div className="w-11/12 h-3/5 flex flex-col justify-between pb-5 gap-2 pt-2  items-start">
-        <p className="font-bol text-xl justify-self-center">{title}</p>
+        <p className="font-bol text-xl justify-self-center">{name}</p>
         <Swiper
           slidesPerView={"auto"}
           spaceBetween={10}
@@ -70,7 +75,7 @@ export default function CardProject({
           onSlideChange={() => console.log("slide change")}
           onSwiper={(swiper) => setSwiper(swiper)}
         >
-          {sizes.map((size, index) => (
+          {[""].map((size, index) => (
             <SwiperSlide className="swiper-card " key={index}>
               <button
                 onClick={() => setselectedSize(index)}
@@ -78,13 +83,36 @@ export default function CardProject({
                   index == selectedSize
                     ? "border-none bg-mainColor text-white"
                     : "border-mainColor border-[1.5px]"
-                }  font-medium  active:border-none active:bg-mainColor active:text-white p-2 rounded-md`}
+                }  font-medium  active:border-none active:bg-mainColor active:text-white p-1 m-1 rounded-sm`}
               >
                 {size}
               </button>
             </SwiperSlide>
           ))}
         </Swiper>
+        <div className="flex w-full justify-normal gap-4 items-center">
+          <p className="inline font-semibold text-solidHeading">الالوان: </p>
+          <Swiper
+            slidesPerView={"auto"}
+            spaceBetween={10}
+            autoHeight={true}
+            className="w-full "
+            onSlideChange={() => console.log("slide change")}
+            onSwiper={(swiper) => console.log(swiper)}
+          >
+            {[""].map((color, index) => (
+              <SwiperSlide key={index} className="swiper-card ">
+                <button
+                  onClick={() => setselectedColor(index)}
+                  key={index}
+                  className={`rounded-full shadow-[inset_-0.5px_0.5px_3px_0px_#1a202c] ${
+                    selectedColor == index ? "ring-4" : ""
+                  } z-50 w-6 h-6 ${color}`}
+                ></button>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
         {/* <div className="hidden md:block">
           <div className="mt-1 flex flex-row justify-center items-center gap-2">
             <button
@@ -105,7 +133,7 @@ export default function CardProject({
         <div className="flex justify-between w-full">
           <div className="flex items-center gap-2">
             <Link
-              href={url}
+              href={"url"}
               className="border-b border-black text-sm font-hacen-tunisia"
             >
               الطلب

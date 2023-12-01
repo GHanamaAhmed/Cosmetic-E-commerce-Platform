@@ -1,16 +1,9 @@
-"use client";
-import { memo, useEffect, useState } from "react";
+import { memo} from "react";
 import Tech from "./tech/tech";
 import Project from "./project/project";
 import Contacts from "./contacts/contacts";
 
 export default memo(function Home() {
-  const [widthScreen, setWidthScreen] = useState(globalThis.innerWidth);
-  useEffect(() => {
-    globalThis.addEventListener("resize", () => {
-      setWidthScreen(() => globalThis.innerWidth);
-    });
-  }, []);
   return (
     <div className="w-full flex flex-col items-center pt-[75px] ">
       <div className="flex flex-col bg-caderSection relative items-center gap-3 rounded-xl w-[98%] md:flex-row-reverse md:justify-around lg:px-28">

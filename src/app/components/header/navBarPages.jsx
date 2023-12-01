@@ -7,7 +7,7 @@ export default function NavBarPages() {
 					<Link href={"/"}>Home</Link>
 				</li>
 				<li className="dark:text-darkContent text-lightContent cursor-pointer">
-					<Link href={"/users/1"}>User</Link>
+					<Link href={"/account"}>User</Link>
 				</li>
 				<li className="dark:text-darkContent text-lightContent cursor-pointer">
 					<Link href={"/orders"}>history</Link>
