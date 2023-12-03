@@ -1,4 +1,5 @@
 import Del from '@/app/components/orders/Del';
+import Information from '@/app/components/orders/Information';
 import Payment from '@/app/components/orders/Payment';
 import Product from '@/app/components/orders/products';
 import React from 'react'
@@ -12,7 +13,7 @@ export default function page() {
 				<Payment/>
 			</div>
 			<div className="w-full h-full flex flex-col justify-evenly items-center">
-				information
+				<Information date_joined="" To_gift='' D_purshase='' adress={""} card={""} phone_number={""} username={""} />
 			</div>
 		</div>
 	);
