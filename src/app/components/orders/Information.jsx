@@ -14,7 +14,7 @@ export default function Information({username, D_purshase,adress,phone_number ,c
 				<p className="font-mono ">username : {username || "skoni maryoul"}</p>
 				<p className="font-mono">date joined : {date_joined || "0/0/2000"} </p>
 			</div>
-			<div className="w-full h-full flex flex-col-reverse text-left border-t-2 ">
+			<div className="w-full h-full flex flex-col-reverse text-left border-t-2 bg-white/0 ">
 				<p className="font-mono">for : {To_gift || "me"}</p>
 				<p className="font-mono">
 					date of purshase : {D_purshase || "1/1/2001"}
