@@ -22,7 +22,7 @@ export default function CardProject({
   photos,
 }) {
   const [swiper, setSwiper] = useState(null);
-  const [selectedColor, setselectedColor] = useState(-1);
+  const [selectedColor, setselectedColor] = useState(0);
   const [selectedSize, setselectedSize] = useState(-1);
   const swiper2 = useSwiper();
   const { width } = useWidth();
@@ -138,7 +138,7 @@ export default function CardProject({
         <div className="flex justify-between w-full">
           <div className="flex items-center gap-2">
             <Link
-              href={"url"}
+              href={`http://localhost:3000/product/${id}`}
               className="border-b border-black text-sm font-hacen-tunisia"
             >
               الطلب

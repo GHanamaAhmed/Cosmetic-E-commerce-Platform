@@ -9,27 +9,29 @@ import "swiper/css/grid";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 import { useWidth } from "@/app/hooks/useWidth";
-import CardProject from "../home/project/cardProject";
 import Contacts from "../home/contacts/contacts";
-
-const sizes = [
-  "كبير",
-  "100 ml",
-  "455",
-  "كبير",
-  "100 ml",
-
-];
-const colors = ["bg-green-500", "bg-blue-500", "bg-red-500", "bg-yellow-500"];
-const numImage = 10;
-export default function Product() {
-  const [selectedSize, setselectedSize] = useState();
-  const [selectedColor, setselectedColor] = useState();
+import Recommendation from "./recommendation";
+export default function Product({ product }) {
+  const [numImage, setNumImage] = useState(0);
+  const [selectedSize, setselectedSize] = useState(-1);
+  const [photos, setPhotos] = useState([]);
+  const [selectedColor, setselectedColor] = useState(0);
   const [isShowDescription, setIsShowDescription] = useState(false);
-  const [hydrated, setHydrated] = useState(false);
   useEffect(() => {
-    setHydrated(true);
-  }, []);
+    setNumImage(
+      product?.photos?.reduce((preveus, currentV) => {
+        return preveus + currentV?.photos?.length;
+      }, 0)
+    );
+    setPhotos(
+      product?.photos?.reduce((preveus, currentV) => {
+        return [...preveus, ...currentV?.photos];
+      }, [])
+    );
+  }, [product]);
+  useEffect(() => {
+    console.log(product);
+  }, [numImage]);
   const { width } = useWidth();
   const numOfSlide = () => {
     if (width > 767) {
@@ -70,18 +72,18 @@ export default function Product() {
             modules={[Pagination]}
             className="w-full h-full   shadow-[inset_0px_20px_20px_10px_#f7fafc]"
           >
-            {[...Array(hydrated ? numOfSlide() : 0)].map((size, index) => (
+            {[...Array(numOfSlide())].map((_, index) => (
               <SwiperSlide
                 className={`swiper-grid relative h-full w-full m-1 `}
                 key={index}
               >
-                {[...Array(numImage)]
-                  .slice(imageStart(index), imageEnd(index))
-                  .map((_, ind) => (
+                {photos
+                  ?.slice(imageStart(index), imageEnd(index))
+                  .map((photo, ind) => (
                     <div key={ind} className="relative w-full h-full ">
                       <Image
                         className="object-contain my-2 ml-2"
-                        src="/img/feature-product-1.jpg"
+                        src={photo}
                         fill
                         alt="img"
                       />
@@ -92,31 +94,37 @@ export default function Product() {
           </Swiper>
         </div>
         <div className="px-5 flex flex-col gap-3 w-full">
-          <p className="text-solidHeading text-2xl">المنتج 1</p>
-          <p className="text-mainColor">200 دج</p>
+          <p className="text-solidHeading text-2xl">{product?.name}</p>
+          <p className="text-mainColor">{product?.price} دج</p>
           <div className="flex flex-wrap gap-2">
-            {sizes.map((size, index) => (
-              <button
-                key={index}
-                onClick={() => setselectedSize(index)}
-                className={`${
-                  index == selectedSize
-                    ? "border-none bg-mainColor text-white"
-                    : "border-mainColor border-[1.5px]"
-                }  font-medium  active:border-none active:bg-mainColor active:text-white p-2 rounded-sm`}
-              >
-                {size}
-              </button>
-            ))}
+            {product?.photos
+              ?.filter((_, index) => selectedColor == index)?.[0]
+              ?.sizes?.map((size, index) => (
+                <button
+                  key={index}
+                  onClick={() => setselectedSize(index)}
+                  className={`${
+                    index == selectedSize
+                      ? "border-none bg-mainColor text-white"
+                      : "border-mainColor border-[1.5px]"
+                  }  font-medium  active:border-none active:bg-mainColor active:text-white p-2 rounded-sm`}
+                >
+                  {size}
+                </button>
+              ))}
           </div>
           <div className="flex gap-2">
-            {colors.map((color, index) => (
+            {product?.photos?.map((e, index) => (
               <button
-                onClick={() => setselectedColor(index)}
+                onClick={() => {
+                  setselectedColor(index);
+                  setselectedSize(-1);
+                }}
                 key={index}
+                style={{ backgroundColor: e?.color }}
                 className={`rounded-full ${
                   selectedColor == index ? "ring-4" : ""
-                } z-50 w-7 h-7 ${color}`}
+                } z-50 w-7 h-7`}
               ></button>
             ))}
           </div>
@@ -132,63 +140,25 @@ export default function Product() {
               اضافة للسلة
             </button>
           </div>
-          <div className="ont-medium relative w-full border-mainColor border-[1.5px] p-2 rounded-sm">
-            <button
-              className={`w-full`}
-              onClick={() => setIsShowDescription(!isShowDescription)}
-            >
-              معلومات المنتج
-            </button>
-            <FaAngleDown
-              className={`${
-                isShowDescription ? "rotate-180" : ""
-              } absolute left-3 top-1/2 -translate-y-1/2`}
-            />
+          <div className="ont-medium  w-full border-mainColor border-[1.5px] p-2 rounded-sm">
+            <div className="relative ">
+              <button
+                className={`w-full`}
+                onClick={() => setIsShowDescription(!isShowDescription)}
+              >
+                معلومات المنتج
+              </button>
+              <FaAngleDown
+                className={`${
+                  isShowDescription ? "rotate-180" : ""
+                } absolute left-3 top-1/2 -translate-y-1/2`}
+              />
+            </div>
+            {isShowDescription && <p>{product?.description}</p>}
           </div>
         </div>
       </div>
-      <div className="px-3 py-5 flex flex-col gap-3">
-        <p className="text-2xl text-solidHeading">مقترحات</p>
-        <div className="flex justify-center w-full">
-          <Swiper
-            slidesPerView={"auto"}
-            navigation={true}
-            modules={[Navigation]}
-            className="mySwiper w-full"
-          >
-            <SwiperSlide className="swiper-card">
-              <CardProject
-                img={"/img/Rectangle 6.png"}
-                title={"المنتج"}
-                colors={[
-                  "bg-green-500",
-                  "bg-blue-500",
-                  "bg-red-500",
-                  "bg-yellow-500",
-                ]}
-                sizes={["100 مل", "100 مل", "100 مل", "100 مل"]}
-                url={""}
-                urlGithub={""}
-              />
-            </SwiperSlide>
-            <SwiperSlide className="swiper-card">
-              <CardProject
-                img={"/img/Rectangle 6.png"}
-                title={"المنتج"}
-                colors={[
-                  "bg-green-500",
-                  "bg-blue-500",
-                  "bg-red-500",
-                  "bg-yellow-500",
-                ]}
-                sizes={["100 مل", "100 مل", "100 مل", "100 مل"]}
-                url={""}
-                urlGithub={""}
-              />
-            </SwiperSlide>
-          </Swiper>
-        </div>
-      </div>
+      <Recommendation type={product?.type} idProduct={product?._id} />
       <Contacts />
     </div>
   );

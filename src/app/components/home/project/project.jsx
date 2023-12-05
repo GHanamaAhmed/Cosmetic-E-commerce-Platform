@@ -7,6 +7,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Axios } from "@/app/libs/axios";
+import { fetchProducts } from "@/app/libs/products";
 export default function Project({ textAlign, widthContainer }) {
   const scrollContainerRef = useRef(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -18,14 +19,9 @@ export default function Project({ textAlign, widthContainer }) {
   const [input, setInput] = useState("");
   const fetch = async (e) => {
     if (e) {
-      await Axios.get(
-        `/products?min=${0}&max=${8}${
-          input.length > 0 ? `&name=${input}` : ""
-        }${type != "الكل" ? `&type=${type}` : ""}`
-      )
+      await fetchProducts(input, type)
         .then((res) => {
           setIsLoading(false);
-          console.log(res.data);
           setProducts((prev) => [...res.data.products]);
           setMin(res.data.products?.length);
           setTypes(res.data?.types);
@@ -36,12 +32,7 @@ export default function Project({ textAlign, widthContainer }) {
           setIsLoading(false);
         });
     } else {
-      await customAxios
-        .get(
-          `/products?min=${min}&max=${min + 8}${
-            input.length > 0 ? `&name=${input}` : ""
-          }${type != "الكل" ? `&type=${type}` : ""}`
-        )
+      await fetchProducts(input, type, min)
         .then((res) => {
           setIsLoading(false);
           setProducts((prev) => [...prev, ...res.data.products]);
