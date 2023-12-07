@@ -1,12 +1,10 @@
 "use client";
 import TitleSection from "../titleSection";
 import CardProject from "./cardProject";
-import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/navigation";
 import { useEffect, useRef, useState } from "react";
-import { Axios } from "@/app/libs/axios";
 import { fetchProducts } from "@/app/libs/products";
 export default function Project({ textAlign, widthContainer }) {
   const scrollContainerRef = useRef(null);
