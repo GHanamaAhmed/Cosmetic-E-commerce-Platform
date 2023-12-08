@@ -11,12 +11,19 @@ import "swiper/css/navigation";
 import { useWidth } from "@/app/hooks/useWidth";
 import Contacts from "../home/contacts/contacts";
 import Recommendation from "./recommendation";
+import { useAppDispatch } from "@/app/hooks/reduxHooks";
+import { addToBasket, changeIsOrder, emptyBasket, updateBasket } from "@/app/redux/basketReducer";
+import { useRouter } from "next/navigation";
+import { toasty } from "../toasty/toast";
 export default function Product({ product }) {
+  const dispatch = useAppDispatch();
+  const router = useRouter();
   const [numImage, setNumImage] = useState(0);
   const [selectedSize, setselectedSize] = useState(-1);
   const [photos, setPhotos] = useState([]);
   const [selectedColor, setselectedColor] = useState(0);
   const [isShowDescription, setIsShowDescription] = useState(false);
+  const [quntity, setQuntity] = useState(1);
   useEffect(() => {
     setNumImage(
       product?.photos?.reduce((preveus, currentV) => {
@@ -95,7 +102,15 @@ export default function Product({ product }) {
         </div>
         <div className="px-5 flex flex-col gap-3 w-full">
           <p className="text-solidHeading text-2xl">{product?.name}</p>
-          <p className="text-mainColor">{product?.price} دج</p>
+          {product?.showPrice && !product?.showPromotion && (
+            <p className="text-mainColor">{product?.price} دج</p>
+          )}
+          {product?.showPrice && product?.showPromotion && (
+            <div className="flex gap-2">
+              <p className="text-mainColor">{product?.promotion} دج</p>
+              <p className="text-gray-400 line-through">{product?.price} دج</p>
+            </div>
+          )}
           <div className="flex flex-wrap gap-2">
             {product?.photos
               ?.filter((_, index) => selectedColor == index)?.[0]
@@ -128,13 +143,107 @@ export default function Product({ product }) {
               ></button>
             ))}
           </div>
+          <div className="flex border w-fit">
+            <button
+              onClick={() => {
+                if (selectedColor !== -1 && selectedSize !== -1) {
+                  product?.quntity - quntity > 0 &&setQuntity((prev) => prev + 1);
+                } else {
+                  toasty("اختر اللون و الحجم اولا", {
+                    position: "top-left",
+                    toastId: "selectColor",
+                    autoClose: 5000,
+                    type: "warning",
+                  });
+                }
+              }}
+              className="px-2 py-0.5 lg:px-3 lg:py-2 border-l  text-sm "
+            >
+              +
+            </button>
+            <div className="px-2 text-sm py-0.5 lg:px-3 lg:py-2">
+              {quntity}
+            </div>
+            <button
+              onClick={() => {
+                if (selectedColor !== -1) {
+                  quntity > 1 &&
+                    setQuntity((prev) => prev - 1);
+                } else {
+                  toasty("اختر اللون اولا", {
+                    position: "top-left",
+                    toastId: "selectColor",
+                    autoClose: 5000,
+                    type: "warning",
+                  });
+                }
+              }}
+              className="px-2 py-0.5 lg:px-3 lg:py-2 border-r text-sm "
+            >
+              -
+            </button>
+          </div>
           <div className="w-full grid grid-cols-2 gap-2">
             <button
+              onClick={() => {
+                if (selectedColor !== -1 && selectedSize !== -1) {
+                  dispatch(emptyBasket());
+                  dispatch(
+                    addToBasket({
+                      id: product?._id,
+                      name: product?.name,
+                      price: product?.price,
+                      maxQuntity: product?.quntity,
+                      quntity,
+                      thumbanil: product?.photos?.[selectedColor]?.photos?.[selectedSize],
+                      photos: product?.photos,
+                      color: product?.photos?.[selectedColor]?.color,
+                      size: product?.photos?.[selectedColor]?.sizes?.[selectedSize],
+                    })
+                  );
+                  dispatch(changeIsOrder(true));
+                  router.push("/checkout");
+                } else {
+                  toasty("حدد اللون و الحجم", {
+                    toastId: "addProduct",
+                    autoClose: 5000,
+                    type: "warning",
+                  });
+                }
+              }}
               className={` font-medium border-mainColor border-[1.5px] active:border-none active:bg-mainColor active:text-white p-2 rounded-sm`}
             >
               طلب
             </button>
             <button
+              onClick={() => {
+                if (selectedColor !== -1 && selectedSize !== -1) {
+                  dispatch(
+                    addToBasket({
+                      id: product?._id,
+                      name: product?.name,
+                      price: product?.price,
+                      maxQuntity: product?.quntity,
+                      quntity,
+                      thumbanil: product?.photos?.[selectedColor]?.photos?.[selectedSize],
+                      photos: product?.photos,
+                      color: product?.photos?.[selectedColor]?.color,
+                      size: product?.photos?.[selectedColor]?.sizes?.[selectedSize],
+                    })
+                  );
+                  toasty("تم وضع المنتج في السلة", {
+                    toastId: "addProduct",
+                    autoClose: 5000,
+                    type: "success",
+                  });
+                } else {
+                  toasty("حدد اللون و الحجم", {
+                    toastId: "addProduct",
+                    autoClose: 5000,
+                    type: "warning",
+                  });
+                }
+              }}
               className={`font-medium border-mainColor border-[1.5px] active:border-none active:bg-[#989898] active:text-white p-2 rounded-sm`}
             >
               اضافة للسلة

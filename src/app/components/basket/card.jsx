@@ -21,7 +21,6 @@ export default function Card({ product,index }) {
             <div className="flex border w-fit">
               <button
                 onClick={() => {
-                  
                   if (
                     product?.color &&
                     product?.size !== null &&
@@ -88,7 +87,7 @@ export default function Card({ product,index }) {
       </div>
       <div className="relative flex flex-col justify-between items-end">
         <button className="h-1 w-2 bg-red-600"></button>
-        <p className="text-sm">1800Da</p>
+        <p className="text-sm">{product?.quntity*product?.price}Da</p>
       </div>
     </div>
   );
