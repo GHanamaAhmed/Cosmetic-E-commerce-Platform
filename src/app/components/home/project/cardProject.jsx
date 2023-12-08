@@ -7,6 +7,12 @@ import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 import { useWidth } from "@/app/hooks/useWidth";
+import { useAppDispatch } from "@/app/hooks/reduxHooks";
+import { LuShoppingCart } from "react-icons/lu";
+import { BsCheckLg } from "react-icons/bs";
+import { addToBasket } from "@/app/redux/basketReducer";
+import Image from "next/image";
+import {toasty} from "@/app/components/toasty/toast"
 export default function CardProject({
   id,
   name,
@@ -26,6 +32,42 @@ export default function CardProject({
   const [selectedSize, setselectedSize] = useState(-1);
   const swiper2 = useSwiper();
   const { width } = useWidth();
+  const [isSave, setIsSave] = useState(save || false);
+  const dispatch = useAppDispatch();
+  const toggleSave = (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    if (selectedSize == -1 || selectedColor == -1) {
+      toasty("اختر الحجم و اللون اولا", {
+        toastId: "addProduct",
+        autoClose: 5000,
+        type: "warning",
+      });
+      return;
+    }
+    dispatch(
+      addToBasket({
+        id,
+        name,
+        price: promotion && isShowPromotion ? promotion : price,
+        quntity: 1,
+        thumbanil: photos?.[selectedColor]?.photos?.[selectedSize],
+        photos,
+        maxQuntity: quntity,
+        size: photos?.[selectedColor]?.sizes?.[selectedSize],
+        color: photos?.[selectedColor]?.color,
+      })
+    );
+    toasty("تم وضع المنتج في السلة", {
+      toastId: "addProduct",
+      autoClose: 5000,
+      type: "success",
+    });
+    setIsSave(true);
+    setTimeout(() => {
+      setIsSave(false);
+    }, 1000);
+  };
   const handleNextClick = () => {
     if (swiper) {
       swiper.slideNext();
@@ -50,8 +92,9 @@ export default function CardProject({
               modules={[Pagination, Autoplay]}
             >
               {photos?.map((e, index) => (
-                <SwiperSlide key={index} className="w-full h-full">
-                  <img
+                <SwiperSlide key={index} className="w-full relative h-full">
+                  <Image
+                    fill
                     crossOrigin="anonymous"
                     className="h-full w-full object-cover"
                     src={
@@ -145,7 +188,22 @@ export default function CardProject({
             </Link>
           </div>
           <div className="flex items-center gap-2">
-            <FiShoppingCart />
+            <button
+              onClick={toggleSave}
+              className={`rounded-full p-2 ${
+                !isSave ? "bg-white" : "bg-scandaryColor"
+              }`}
+            >
+              {!isSave ? (
+                <LuShoppingCart size={15} className={`stroke-basketColor`} />
+              ) : (
+                <BsCheckLg
+                  size={15}
+                  className={`animate-[appear_0.3s_ease-in-out] fill-white`}
+                />
+              )}
+            </button>
+            {/* <FiShoppingCart /> */}
           </div>
         </div>
       </div>

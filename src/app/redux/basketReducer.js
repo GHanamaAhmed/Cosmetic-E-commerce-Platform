@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
 const basketSlice = createSlice({
   name: "basket",
@@ -40,11 +40,10 @@ const basketSlice = createSlice({
     },
     updateBasket: function (state, { payload }) {
       state.products = state.products.map((e, i) =>
-        payload?.index == i ? { ...payload?.basket } : e
+        payload?.index == i ? { ...payload?.product } : e
       );
     },
     multyUpdateBasket: function (state, { payload }) {
-      console.log(payload);
       state.products = state.products.map((e, i) =>
         payload?.[i] - e.quntity < 0
           ? {
