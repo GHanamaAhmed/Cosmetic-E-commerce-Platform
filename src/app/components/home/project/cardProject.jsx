@@ -10,9 +10,14 @@ import { useWidth } from "@/app/hooks/useWidth";
 import { useAppDispatch } from "@/app/hooks/reduxHooks";
 import { LuShoppingCart } from "react-icons/lu";
 import { BsCheckLg } from "react-icons/bs";
-import { addToBasket } from "@/app/redux/basketReducer";
+import {
+  addToBasket,
+  changeIsOrder,
+  emptyBasket,
+} from "@/app/redux/basketReducer";
 import Image from "next/image";
-import {toasty} from "@/app/components/toasty/toast"
+import { toasty } from "@/app/components/toasty/toast";
+import { useRouter } from "next/navigation";
 export default function CardProject({
   id,
   name,
@@ -34,6 +39,7 @@ export default function CardProject({
   const { width } = useWidth();
   const [isSave, setIsSave] = useState(save || false);
   const dispatch = useAppDispatch();
+  const router = useRouter();
   const toggleSave = (e) => {
     e.stopPropagation();
     e.preventDefault();
@@ -74,7 +80,10 @@ export default function CardProject({
     }
   };
   return (
-    <div className="rounded-md w-[94%] max-w-[280px] h-[400px] overflow-hidden flex shadow-2xl flex-col  justify-between  items-center">
+    <div
+      onClick={() => router.push(`product/${id}`)}
+      className="rounded-md w-[94%] max-w-[280px] h-[400px] overflow-hidden flex shadow-2xl flex-col  justify-between  items-center"
+    >
       <div className="relative h-full w-full max-h-[75%] img-project">
         <div className="aspect-w-3 aspect-h-4 relative flex h-full w-full items-center justify-center">
           <div className="flex h-full w-full items-center justify-center">
@@ -117,15 +126,16 @@ export default function CardProject({
           navigation={{ prevEl: ".prev", nextEl: ".next" }}
           modules={[Navigation]}
           className="w-full shadow-[inset_4px_0px_8px_0px_#edf2f7] rounded-lg "
-          onSlideChange={() => console.log("slide change")}
-          onSwiper={(swiper) => setSwiper(swiper)}
         >
           {photos
             .filter((_, index) => index == selectedColor)?.[0]
             ?.sizes?.map((size, index) => (
               <SwiperSlide className="swiper-card " key={index}>
                 <button
-                  onClick={() => setselectedSize(index)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setselectedSize(index);
+                  }}
                   className={`${
                     index == selectedSize
                       ? "border-none bg-mainColor text-white"
@@ -150,7 +160,10 @@ export default function CardProject({
             {photos.map((e, index) => (
               <SwiperSlide key={index} className="swiper-card ">
                 <button
-                  onClick={() => setselectedColor(index)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setselectedColor(index);
+                  }}
                   key={index}
                   style={{ backgroundColor: e?.color }}
                   className={`rounded-full  ${
@@ -161,31 +174,41 @@ export default function CardProject({
             ))}
           </Swiper>
         </div>
-        {/* <div className="hidden md:block">
-          <div className="mt-1 flex flex-row justify-center items-center gap-2">
-            <button
-              className="rounded-full h-6 w-6 text-center border-2 shadow-emerald-800 hover:text-emerald-500 transition-all duration-300 hover:shadow-lg"
-              onClick={() => swiper && swiper.slidePrev()}
-            >
-              <GrLinkNext className="h-5 w-5  border-black " />
-            </button>
-            <button
-              className="rounded-full h-6 w-6 text-center border-2 shadow-emerald-800 hover:shadow-lg"
-              onClick={() => swiper && swiper.slideNext()}
-            >
-              <GrLinkPrevious className="h-5 w-5  border-black hover:text-emerald-500 transition-all duration-300 " />
-            </button>
-          </div>
-        </div> */}
-
         <div className="flex justify-between w-full">
           <div className="flex items-center gap-2">
-            <Link
-              href={`http://localhost:3000/product/${id}`}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                if (selectedColor !== -1 && selectedSize !== -1) {
+                  dispatch(emptyBasket());
+                  dispatch(
+                    addToBasket({
+                      id: id,
+                      name: name,
+                      price: price,
+                      maxQuntity: quntity,
+                      quntity,
+                      thumbanil:
+                        photos?.[selectedColor]?.photos?.[selectedSize],
+                      photos: photos,
+                      color: photos?.[selectedColor]?.color,
+                      size: photos?.[selectedColor]?.sizes?.[selectedSize],
+                    })
+                  );
+                  dispatch(changeIsOrder(true));
+                  router.push("/checkout");
+                } else {
+                  toasty("حدد اللون و الحجم", {
+                    toastId: "addProduct",
+                    autoClose: 5000,
+                    type: "warning",
+                  });
+                }
+              }}
               className="border-b border-black text-sm font-hacen-tunisia"
             >
               الطلب
-            </Link>
+            </button>
           </div>
           <div className="flex items-center gap-2">
             <button

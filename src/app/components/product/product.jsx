@@ -132,6 +132,8 @@ export default function Product({ product }) {
             {product?.photos?.map((e, index) => (
               <button
                 onClick={() => {
+                  if (index == selectedColor) 
+                    return;
                   setselectedColor(index);
                   setselectedSize(-1);
                 }}
@@ -139,7 +141,7 @@ export default function Product({ product }) {
                 style={{ backgroundColor: e?.color }}
                 className={`rounded-full ${
                   selectedColor == index ? "ring-4" : ""
-                } z-50 w-7 h-7`}
+                } w-7 h-7`}
               ></button>
             ))}
           </div>

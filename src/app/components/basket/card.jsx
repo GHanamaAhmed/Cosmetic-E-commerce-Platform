@@ -1,4 +1,4 @@
-import { updateBasket } from "@/app/redux/basketReducer";
+import { remveByIdFromBasket, updateBasket } from "@/app/redux/basketReducer";
 import Image from "next/image";
 import React from "react";
 import { useAppDispatch } from "@/app/hooks/reduxHooks";
@@ -86,7 +86,7 @@ export default function Card({ product,index }) {
         </div>
       </div>
       <div className="relative flex flex-col justify-between items-end">
-        <button className="h-1 w-2 bg-red-600"></button>
+        <button  onClick={() => dispatch(remveByIdFromBasket(index))} className="h-1 w-2 bg-red-600"></button>
         <p className="text-sm">{product?.quntity*product?.price}Da</p>
       </div>
     </div>

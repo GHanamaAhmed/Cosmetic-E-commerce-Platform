@@ -5,10 +5,12 @@ import NavBarPages from "./navBarPages";
 import Image from "next/image";
 import Basket from "../basket/basket";
 import { SlBasketLoaded } from "react-icons/sl";
+import { useRouter } from "next/navigation";
 export default memo(function Header() {
   const [isBasketActive, setIsBasketActive] = useState(false);
   const [positionScroll, setPositinScroll] = useState(globalThis.screenY);
   const [headerPosition, setHeaderPosition] = useState("");
+  const router = useRouter();
   useEffect(() => {
     const handlePosition = () => {
       if (positionScroll < globalThis.scrollY) {
@@ -31,9 +33,12 @@ export default memo(function Header() {
       <header
         className={`w-full fixed bg- z-50 bg-white ${headerPosition} duration-500 flex-row-reverse flex items-center justify-around py-2`}
       >
-        <div className="w-[97px] h-[59px] inline-block relative">
-          <Image className="-z-10" src="/img/logo 1.svg" fill alt="logo" />
-        </div>
+        <button onClick={() => router.push("/")}>
+          <div className="w-[97px] h-[59px] inline-block relative">
+            {" "}
+            <Image className="-z-10" src="/img/logo 1.svg" fill alt="logo" />
+          </div>
+        </button>
         <div className="md:flex md:flex-row-reverse justify-between items-center gap-10 hidden">
           <NavBarPages />
           <ul className="flex justify-between items-center gap-3">
@@ -41,9 +46,7 @@ export default memo(function Header() {
           </ul>
         </div>
         <div className="flex gap-5">
-          <div
-            className="flex flex-col md:hidden items-center gap-1 cursor-pointer"
-          >
+          <div className="flex flex-col md:hidden items-center gap-1 cursor-pointer">
             <div
               className={`h-1 w-6 rounded-lg bg-darkMode  duration-300 ${
                 false ? "-translate-x-4" : ""
@@ -56,7 +59,7 @@ export default memo(function Header() {
             ></div>
             <div className="h-1 w-6 rounded-lg bg-darkMode "></div>
           </div>
-          <SlBasketLoaded size={20}  onClick={handleMenu}/>
+          <SlBasketLoaded size={20} onClick={handleMenu} />
         </div>
       </header>
       <div
