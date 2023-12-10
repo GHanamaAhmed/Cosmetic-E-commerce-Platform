@@ -87,52 +87,7 @@ export default function Checkout() {
       await create_payement(invoice);
     } catch (error) {
       // handle your error here
-      console.log(error?.code);
-    }
-
-    // const invoice = {
-    //   amount: 600,
-    //   client: "Ahmed malek", // add a text field to allow the user to enter his name, or get it from a context api (depends on the project architecture)
-    //   client_enail: "ghanamaahmed@gmail.com",
-    //   mode: "EDAHABIA",
-    //   invoice_number: 5655,
-    //   discount: 0,
-    //   comment: "test",
-    //   webhook_url: "https://crowinc.free.beeceptor.com/", // here is the webhook url, use beecptor to easly see the post request and it's body, you will use this in backened to save and validate the transactions.
-    //   back_url: "https://www.youtube.com/", // to where the user will be redirected after he finish/cancel the payement
-    //   discount: 0,
-    // api_key:
-    //   "api_uaxvP7R6F1to33NUoNiyXCiWLuGpKuB4KRi7iGvv04vbrnaCaUO0zb44H6caD6AR",
-    // api_secret:
-    //   "secret_ab3e4dec5faf044d61715eff7fa5126c1e605ca5920b69b9ea1b6851e73cbb52",
-    // };
-    // await axios
-    //   .post("http://epay.chargily.com.dz/api/invoice", invoice, {
-    //     headers: {
-    //       "X-Authorization":
-    //         "api_uaxvP7R6F1to33NUoNiyXCiWLuGpKuB4KRi7iGvv04vbrnaCaUO0zb44H6caD6AR",
-    //       Accept: "application/json",
-    //       Origin: "https://google.com",
-    //     },
-    //   })
-    //   .then((res) => console.log(res))
-    //   .catch((err) => console.error(err));
-  };
-  const pay = async () => {
-    const invoice = {
-      amount: 600,
-      invoice_number: 23,
-      client: "Ahmed malek", // add a text field to allow the user to enter his name, or get it from a context api (depends on the project architecture)
-      mode: "EDAHABIA",
-      webhook_url: "https://crowinc.free.beeceptor.com", // here is the webhook url, use beecptor to easly see the post request and it's body, you will use this in backened to save and validate the transactions.
-      back_url: "https://www.youtube.com/", // to where the user will be redirected after he finish/cancel the payement
-      discount: 0,
-    };
-    try {
-      await create_payement(invoice);
-    } catch (error) {
-      // handle your error here
-      console.log(error?.code);
+      console.log(error);
     }
   };
   const pay2 = async () => {
@@ -147,10 +102,10 @@ export default function Checkout() {
       webhook_url: "https://crowinc.free.beeceptor.com/", // here is the webhook url, use beecptor to easly see the post request and it's body, you will use this in backened to save and validate the transactions.
       back_url: "https://www.youtube.com/", // to where the user will be redirected after he finish/cancel the payement
       discount: 0,
-      api_key:
-        "api_uaxvP7R6F1to33NUoNiyXCiWLuGpKuB4KRi7iGvv04vbrnaCaUO0zb44H6caD6AR",
-      api_secret:
-        "secret_ab3e4dec5faf044d61715eff7fa5126c1e605ca5920b69b9ea1b6851e73cbb52",
+      // api_key:
+      //   "api_uaxvP7R6F1to33NUoNiyXCiWLuGpKuB4KRi7iGvv04vbrnaCaUO0zb44H6caD6AR",
+      // api_secret:
+      //   "secret_ab3e4dec5faf044d61715eff7fa5126c1e605ca5920b69b9ea1b6851e73cbb52",
     };
     await axios
       .post("http://epay.chargily.com.dz/api/invoice", invoice, {
@@ -158,7 +113,6 @@ export default function Checkout() {
           "X-Authorization":
             "api_uaxvP7R6F1to33NUoNiyXCiWLuGpKuB4KRi7iGvv04vbrnaCaUO0zb44H6caD6AR",
           Accept: "application/json",
-          Origin: "https://google.com",
         },
       })
       .then((res) => console.log(res))
