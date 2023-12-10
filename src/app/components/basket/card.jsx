@@ -5,7 +5,6 @@ import { useAppDispatch } from "@/app/hooks/reduxHooks";
 import { toasty } from "@/app/components/toasty/toast";
 export default function Card({ product,index }) {
   const dispatch = useAppDispatch();
-  console.log(product);
   return (
     <div className="w-full flex py-3 px-3 border-b justify-between">
       <div className="flex">
@@ -26,7 +25,6 @@ export default function Card({ product,index }) {
                     product?.size !== null &&
                     product?.size !== undefined
                   ) {
-                    console.log(product?.maxQuntity - product?.quntity);
                     product?.maxQuntity - product?.quntity > 0 &&
                       dispatch(
                         updateBasket({

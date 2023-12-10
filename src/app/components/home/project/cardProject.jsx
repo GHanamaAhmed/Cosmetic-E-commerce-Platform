@@ -154,8 +154,6 @@ export default function CardProject({
             spaceBetween={10}
             autoHeight={true}
             className="w-full "
-            onSlideChange={() => console.log("slide change")}
-            onSwiper={(swiper) => console.log(swiper)}
           >
             {photos.map((e, index) => (
               <SwiperSlide key={index} className="swiper-card ">
@@ -187,7 +185,7 @@ export default function CardProject({
                       name: name,
                       price: price,
                       maxQuntity: quntity,
-                      quntity,
+                      quntity:1,
                       thumbanil:
                         photos?.[selectedColor]?.photos?.[selectedSize],
                       photos: photos,

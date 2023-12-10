@@ -1,6 +1,6 @@
-import React from "react";
+import React, { memo } from "react";
 
-export default function ClientINfo() {
+export default memo(function ClientINfo() {
   return (
     <div className="w-full h-full flex gap-2 flex-col">
       <div className="flex flex-col w-full">
@@ -175,4 +175,4 @@ export default function ClientINfo() {
       </div>
     </div>
   );
-}
+});
