@@ -84,7 +84,7 @@ export default function Checkout() {
       discount: 0,
     };
     try {
-      await create_payement(invoice);
+      await create_payement(invoice).then((res) => console.log(res));
     } catch (error) {
       // handle your error here
       console.log(error);
@@ -108,7 +108,7 @@ export default function Checkout() {
       //   "secret_ab3e4dec5faf044d61715eff7fa5126c1e605ca5920b69b9ea1b6851e73cbb52",
     };
     await axios
-      .post("http://epay.chargily.com.dz/api/invoice", invoice, {
+      .post("https://epay.chargily.com.dz/api/invoice", invoice, {
         headers: {
           "X-Authorization":
             "api_uaxvP7R6F1to33NUoNiyXCiWLuGpKuB4KRi7iGvv04vbrnaCaUO0zb44H6caD6AR",
