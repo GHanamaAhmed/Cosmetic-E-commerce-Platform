@@ -12,6 +12,7 @@
     "@heroicons/react": "^2.0.18",
     "@reduxjs/toolkit": "^1.9.7",
     "axios": "^1.6.2",
+    "chargily-epay-react-js": "^1.0.0",
     "next": "14.0.2",
     "react": "^18",
     "react-dom": "^18",

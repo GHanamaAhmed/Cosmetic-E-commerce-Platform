@@ -5,6 +5,7 @@ import React, { useMemo, useState } from "react";
 import Image from "next/image";
 import ClientINfo from "../ClientINfo";
 import Card from "./card";
+import { create_payement } from "chargily-epay-react-js";
 import axios from "axios";
 export default function Checkout() {
   const { products, order } = useAppSelector((state) => state.basket);
@@ -72,32 +73,96 @@ export default function Checkout() {
       })
       .finally((f) => setIsSend(false));
   };
-  const pay = () => {
-    axios
-      .post(
-        "https://devapi.slick-pay.com/api/v1/users/accounts",
-        {
-          rib: "00799999002600751111",
-          title: "main",
-          lastname: "Ghanama",
-          firstname: "Ahmed",
-          address: "Adrar",
-        },
-        {
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${"165|M88yS5tC3kjHt3FlPmOOO1lyGxWyh9ZJMJ0UnyMH"}`,
-          },
-        }
-      )
-      .then((result) => {
-        let response = result.data;
+  const pay = async () => {
+    const invoice = {
+      amount: 600,
+      invoice_number: 23,
+      client: "Ahmed malek", // add a text field to allow the user to enter his name, or get it from a context api (depends on the project architecture)
+      mode: "EDAHABIA",
+      webhook_url: "https://crowinc.free.beeceptor.com", // here is the webhook url, use beecptor to easly see the post request and it's body, you will use this in backened to save and validate the transactions.
+      back_url: "https://www.youtube.com/", // to where the user will be redirected after he finish/cancel the payement
+      discount: 0,
+    };
+    try {
+      await create_payement(invoice);
+    } catch (error) {
+      // handle your error here
+      console.log(error?.code);
+    }
 
-        console.log(response);
+    // const invoice = {
+    //   amount: 600,
+    //   client: "Ahmed malek", // add a text field to allow the user to enter his name, or get it from a context api (depends on the project architecture)
+    //   client_enail: "ghanamaahmed@gmail.com",
+    //   mode: "EDAHABIA",
+    //   invoice_number: 5655,
+    //   discount: 0,
+    //   comment: "test",
+    //   webhook_url: "https://crowinc.free.beeceptor.com/", // here is the webhook url, use beecptor to easly see the post request and it's body, you will use this in backened to save and validate the transactions.
+    //   back_url: "https://www.youtube.com/", // to where the user will be redirected after he finish/cancel the payement
+    //   discount: 0,
+    // api_key:
+    //   "api_uaxvP7R6F1to33NUoNiyXCiWLuGpKuB4KRi7iGvv04vbrnaCaUO0zb44H6caD6AR",
+    // api_secret:
+    //   "secret_ab3e4dec5faf044d61715eff7fa5126c1e605ca5920b69b9ea1b6851e73cbb52",
+    // };
+    // await axios
+    //   .post("http://epay.chargily.com.dz/api/invoice", invoice, {
+    //     headers: {
+    //       "X-Authorization":
+    //         "api_uaxvP7R6F1to33NUoNiyXCiWLuGpKuB4KRi7iGvv04vbrnaCaUO0zb44H6caD6AR",
+    //       Accept: "application/json",
+    //       Origin: "https://google.com",
+    //     },
+    //   })
+    //   .then((res) => console.log(res))
+    //   .catch((err) => console.error(err));
+  };
+  const pay = async () => {
+    const invoice = {
+      amount: 600,
+      invoice_number: 23,
+      client: "Ahmed malek", // add a text field to allow the user to enter his name, or get it from a context api (depends on the project architecture)
+      mode: "EDAHABIA",
+      webhook_url: "https://crowinc.free.beeceptor.com", // here is the webhook url, use beecptor to easly see the post request and it's body, you will use this in backened to save and validate the transactions.
+      back_url: "https://www.youtube.com/", // to where the user will be redirected after he finish/cancel the payement
+      discount: 0,
+    };
+    try {
+      await create_payement(invoice);
+    } catch (error) {
+      // handle your error here
+      console.log(error?.code);
+    }
+  };
+  const pay2 = async () => {
+    const invoice = {
+      amount: 600,
+      client: "Ahmed malek", // add a text field to allow the user to enter his name, or get it from a context api (depends on the project architecture)
+      client_enail: "ghanamaahmed@gmail.com",
+      mode: "EDAHABIA",
+      invoice_number: 5655,
+      discount: 0,
+      comment: "test",
+      webhook_url: "https://crowinc.free.beeceptor.com/", // here is the webhook url, use beecptor to easly see the post request and it's body, you will use this in backened to save and validate the transactions.
+      back_url: "https://www.youtube.com/", // to where the user will be redirected after he finish/cancel the payement
+      discount: 0,
+      api_key:
+        "api_uaxvP7R6F1to33NUoNiyXCiWLuGpKuB4KRi7iGvv04vbrnaCaUO0zb44H6caD6AR",
+      api_secret:
+        "secret_ab3e4dec5faf044d61715eff7fa5126c1e605ca5920b69b9ea1b6851e73cbb52",
+    };
+    await axios
+      .post("http://epay.chargily.com.dz/api/invoice", invoice, {
+        headers: {
+          "X-Authorization":
+            "api_uaxvP7R6F1to33NUoNiyXCiWLuGpKuB4KRi7iGvv04vbrnaCaUO0zb44H6caD6AR",
+          Accept: "application/json",
+          Origin: "https://google.com",
+        },
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .then((res) => console.log(res))
+      .catch((err) => console.error(err));
   };
   return (
     <div className="w-full h-full flex flex-col items-center pt-[75px] gap-10">
@@ -369,6 +434,7 @@ export default function Checkout() {
             />
           </div>
           <button onClick={pay}>pay</button>
+          <button onClick={pay2}>pay2</button>
         </div>
       </div>
     </div>
