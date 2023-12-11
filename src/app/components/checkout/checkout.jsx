@@ -5,7 +5,6 @@ import React, { useMemo, useState } from "react";
 import Image from "next/image";
 import ClientINfo from "../ClientINfo";
 import Card from "./card";
-import { create_payement } from "chargily-epay-react-js";
 import axios from "axios";
 export default function Checkout() {
   const { products, order } = useAppSelector((state) => state.basket);
@@ -76,23 +75,6 @@ export default function Checkout() {
   const pay = async () => {
     const invoice = {
       amount: 600,
-      invoice_number: 23,
-      client: "Ahmed malek", // add a text field to allow the user to enter his name, or get it from a context api (depends on the project architecture)
-      mode: "EDAHABIA",
-      webhook_url: "https://crowinc.free.beeceptor.com", // here is the webhook url, use beecptor to easly see the post request and it's body, you will use this in backened to save and validate the transactions.
-      back_url: "https://www.youtube.com/", // to where the user will be redirected after he finish/cancel the payement
-      discount: 0,
-    };
-    try {
-      await create_payement(invoice).then((res) => console.log(res));
-    } catch (error) {
-      // handle your error here
-      console.log(error);
-    }
-  };
-  const pay2 = async () => {
-    const invoice = {
-      amount: 600,
       client: "Ahmed malek", // add a text field to allow the user to enter his name, or get it from a context api (depends on the project architecture)
       client_enail: "ghanamaahmed@gmail.com",
       mode: "EDAHABIA",
@@ -155,8 +137,8 @@ export default function Checkout() {
                 <p className="font-mono text-sm "> التخفيض</p>
                 <p className="font-mono text-sm ">
                   {discountPorcent
-                    ? price * discountPorcent
-                    : price - discountPrice}{" "}
+                    ? price - price * (1 - discountPorcent)
+                    : discountPrice}{" "}
                   دج
                 </p>
               </div>
@@ -388,7 +370,6 @@ export default function Checkout() {
             />
           </div>
           <button onClick={pay}>pay</button>
-          <button onClick={pay2}>pay2</button>
         </div>
       </div>
     </div>

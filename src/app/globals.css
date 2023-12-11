@@ -1,7 +1,7 @@
+@import "nprogress/nprogress.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
 @font-face {
   font-family: "Hacen Tunisia";
   src: url("../../public/fonts/Hacen\ Tunisia.ttf");
@@ -66,4 +66,13 @@ body {
   .swiper-grid {
     display: block !important;
   }
+}
+
+#nprogress .bar {
+  height: 3px;
+}
+#nprogress .spinner-icon {
+  width: 25px;
+  height: 25px;
+  border: solid 3px transparent;
 }

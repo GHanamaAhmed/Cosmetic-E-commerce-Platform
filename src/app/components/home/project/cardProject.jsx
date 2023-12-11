@@ -17,7 +17,7 @@ import {
 } from "@/app/redux/basketReducer";
 import Image from "next/image";
 import { toasty } from "@/app/components/toasty/toast";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/app/libs/router-events/patch-router/router";
 export default function CardProject({
   id,
   name,
@@ -81,7 +81,7 @@ export default function CardProject({
   };
   return (
     <div
-      onClick={() => router.push(`product/${id}`)}
+      onClick={() => router.push(`../product/${id}`)}
       className="rounded-md w-[94%] max-w-[280px] h-[400px] overflow-hidden flex shadow-2xl flex-col  justify-between  items-center"
     >
       <div className="relative h-full w-full max-h-[75%] img-project">
@@ -185,7 +185,7 @@ export default function CardProject({
                       name: name,
                       price: price,
                       maxQuntity: quntity,
-                      quntity:1,
+                      quntity: 1,
                       thumbanil:
                         photos?.[selectedColor]?.photos?.[selectedSize],
                       photos: photos,
@@ -224,7 +224,6 @@ export default function CardProject({
                 />
               )}
             </button>
-            {/* <FiShoppingCart /> */}
           </div>
         </div>
       </div>

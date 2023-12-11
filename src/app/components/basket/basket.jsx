@@ -2,7 +2,7 @@ import Image from "next/image";
 import React, { useMemo } from "react";
 import { useAppSelector,useAppDispatch } from "@/app/hooks/reduxHooks";
 import Card from "./card";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/app/libs/router-events/patch-router/router";
 import { changeIsOrder } from "@/app/redux/basketReducer";
 export default function Basket() {
   const { products } = useAppSelector((state) => state.basket);
