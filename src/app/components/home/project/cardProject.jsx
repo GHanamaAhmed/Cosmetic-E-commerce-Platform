@@ -85,6 +85,21 @@ export default function CardProject({
       className="rounded-md w-[94%] max-w-[280px] h-[400px] overflow-hidden flex shadow-2xl flex-col  justify-between  items-center"
     >
       <div className="relative h-full w-full max-h-[75%] img-project">
+        <button
+          onClick={toggleSave}
+          className={`rounded-full z-10 p-2 absolute right-2 top-2 ${
+            !isSave ? "bg-white" : "bg-scandaryColor"
+          }`}
+        >
+          {!isSave ? (
+            <LuShoppingCart size={15} className={`stroke-basketColor`} />
+          ) : (
+            <BsCheckLg
+              size={15}
+              className={`animate-[appear_0.3s_ease-in-out] fill-white`}
+            />
+          )}
+        </button>
         <div className="aspect-w-3 aspect-h-4 relative flex h-full w-full items-center justify-center">
           <div className="flex h-full w-full items-center justify-center">
             <Swiper
@@ -117,8 +132,12 @@ export default function CardProject({
           </div>
         </div>
       </div>
-      <div className="w-11/12 h-3/5 flex flex-col justify-between pb-5 gap-2 pt-2  items-start">
-        <p className="font-bol text-xl justify-self-center">{name}</p>
+      <div className="w-11/12 h-1/2 flex flex-col justify-between pb-5 gap-1 pt-2  items-start">
+        <div className="w-full flex justify-between">
+          <p className="w-1/2 text-xl justify-self-center text-ellipsis overflow-hidden">
+            {name}
+          </p>
+        </div>
         <Swiper
           slidesPerView={"auto"}
           spaceBetween={10}
@@ -209,21 +228,15 @@ export default function CardProject({
             </button>
           </div>
           <div className="flex items-center gap-2">
-            <button
-              onClick={toggleSave}
-              className={`rounded-full p-2 ${
-                !isSave ? "bg-white" : "bg-scandaryColor"
-              }`}
-            >
-              {!isSave ? (
-                <LuShoppingCart size={15} className={`stroke-basketColor`} />
-              ) : (
-                <BsCheckLg
-                  size={15}
-                  className={`animate-[appear_0.3s_ease-in-out] fill-white`}
-                />
-              )}
-            </button>
+            {isShowPrice && !isShowPromotion && (
+              <p className="text-mainColor">{price} دج</p>
+            )}
+            {isShowPrice && isShowPromotion && (
+              <div className="flex gap-2">
+                <p className="text-mainColor">{promotion} دج</p>
+                <p className="text-gray-400 line-through">{price} دج</p>
+              </div>
+            )}
           </div>
         </div>
       </div>

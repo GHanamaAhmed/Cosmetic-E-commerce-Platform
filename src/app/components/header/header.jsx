@@ -1,11 +1,11 @@
 "use client";
-import { memo, useEffect, useLayoutEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import Contact from "./contact";
 import NavBarPages from "./navBarPages";
 import Image from "next/image";
 import Basket from "../basket/basket";
 import { SlBasketLoaded } from "react-icons/sl";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/app/libs/router-events/patch-router/router";
 export default memo(function Header() {
   const [isBasketActive, setIsBasketActive] = useState(false);
   const [positionScroll, setPositinScroll] = useState(globalThis.screenY);
@@ -65,7 +65,7 @@ export default memo(function Header() {
       <div
         className={`fixed transition-all pt-[80px] w-full md:w-fit lg:4/12 h-full ${
           isBasketActive ? "" : "translate-x-full"
-        } z-10 right-0 bg-white shadow-sm top-0`}
+        } z-40 right-0 bg-white shadow-sm top-0`}
       >
         <Basket />
       </div>
