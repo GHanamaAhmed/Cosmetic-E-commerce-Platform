@@ -168,28 +168,30 @@ export default function CardProject({
         </Swiper>
         <div className="flex w-full justify-normal gap-4 items-center">
           <p className="inline font-semibold text-solidHeading">الالوان: </p>
-          <Swiper
-            slidesPerView={"auto"}
-            spaceBetween={10}
-            autoHeight={true}
-            className="w-full "
-          >
-            {photos.map((e, index) => (
-              <SwiperSlide key={index} className="swiper-card ">
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setselectedColor(index);
-                  }}
-                  key={index}
-                  style={{ backgroundColor: e?.color }}
-                  className={`rounded-full  ${
-                    selectedColor == index ? "ring-4" : ""
-                  } z-50 w-6 h-6`}
-                ></button>
-              </SwiperSlide>
-            ))}
-          </Swiper>
+          {photos?.[0]?.color != "#" && (
+            <Swiper
+              slidesPerView={"auto"}
+              spaceBetween={10}
+              autoHeight={true}
+              className="w-full "
+            >
+              {photos.map((e, index) => (
+                <SwiperSlide key={index} className="swiper-card ">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setselectedColor(index);
+                    }}
+                    key={index}
+                    style={{ backgroundColor: e?.color }}
+                    className={`rounded-full  ${
+                      selectedColor == index ? "ring-4" : ""
+                    } z-50 w-6 h-6`}
+                  ></button>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          )}
         </div>
         <div className="flex justify-between w-full">
           <div className="flex items-center gap-2">

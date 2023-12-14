@@ -48,19 +48,19 @@ export default function Project({ textAlign, widthContainer }) {
     fetch(true);
   }, [type]);
   const more = (e) => {
-    e.preventDefault();
+    e?.preventDefault();
     fetch();
   };
   const handleScroll = () => {
-    const { scrollTop, clientHeight, scrollHeight } =
-      scrollContainerRef.current;
-    console.log("ggg");
-    // Check if user has scrolled to the bottom
-    if (scrollTop + clientHeight === scrollHeight) {
-      console.log("Reached the bottom!");
-      // Do something when scrolled to the bottom
+    if (window.innerHeight + document.documentElement.scrollTop !== document.documentElement.offsetHeight || isLoading) {
+      return;
     }
+    more();
   };
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [isLoading]);
   return (
     <div className="w-full h-full flex flex-col items-center gap-5">
       <div className="w-[90%]">
@@ -74,6 +74,7 @@ export default function Project({ textAlign, widthContainer }) {
           <div
             ref={scrollContainerRef}
             onScroll={handleScroll}
+            
             className="w-[90%] h-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 justify-items-center gap-5"
           >
             {products.map((e, i) => (
