@@ -1,14 +1,17 @@
 "use client";
 import { useAppDispatch, useAppSelector } from "@/app/hooks/reduxHooks";
 import { useRouter } from "next/navigation";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import ClientINfo from "../ClientINfo";
 import Card from "./card";
 import axios from "axios";
+import { Axios } from "@/app/libs/axios";
+import { toasty } from "../toasty/toast";
+import { emptyBasket, multyUpdateBasket } from "@/app/redux/basketReducer";
 export default function Checkout() {
   const { products, order } = useAppSelector((state) => state.basket);
-  // const { user, isAuthenticated } = useAppSelector((state) => state.account);
+  const { user, isAuthenticated } = useAppSelector((state) => state.account);
   const [shipping, setShipping] = useState(0);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -21,9 +24,9 @@ export default function Checkout() {
   const [isLading, setIsLoading] = useState(true);
   const [isSend, setIsSend] = useState(false);
   const [wilayas, setWilayas] = useState([]);
-  const [wilaya, setWilaya] = useState();
+  const [wilaya, setWilaya] = useState("adrar");
   const [baladias, setBaladias] = useState([]);
-  const [baladia, setBaladia] = useState();
+  const [baladia, setBaladia] = useState("adrar");
   const [delivery, setDelivery] = useState("deleveryAgency");
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -33,6 +36,44 @@ export default function Checkout() {
       0
     );
   }, [products]);
+  useEffect(() => {
+    setFirstName(user?.firstName);
+    setLastName(user?.lastName);
+    setEmail(user?.email);
+    setPhone(user?.phone);
+  }, [user]);
+  useEffect(() => {
+    if (order) {
+      setIsLoading(false);
+    } else {
+      router.replace("/");
+    }
+    Axios.get("/cities/wilaya")
+      .then((res) => setWilayas(res.data))
+      .catch((err) => console.error(err));
+    // return () => {
+    //   dispatch(emptyBasket());
+    // };
+  }, []);
+  useEffect(() => {
+    console.log(wilaya);
+    Axios.get(`/cities/wilaya/${wilaya?.id}`)
+      .then((res) => setBaladias(res.data))
+      .catch((err) => console.error(err));
+  }, [wilaya]);
+  useEffect(() => {
+    try {
+      delivery &&
+        wilaya &&
+        Axios.get(
+          `cities/deliveryPrice?wilaya1=${wilaya?.name}&id=${wilaya?.id}&delivery=${delivery}`
+        )
+          .then((res) => setShipping(0))
+          .catch((err) => console.error(err));
+    } catch (e) {
+      console.error(e);
+    }
+  }, [delivery, wilaya]);
   const checkCode = (e) => {
     if (!e?.currentTarget.value) {
       setDiscountPorcent(0);
@@ -40,8 +81,7 @@ export default function Checkout() {
       return;
     }
     setIsSend(true);
-    customAxios
-      .post("/coupon", { code: e?.currentTarget.value })
+    Axios.post("/coupon", { code: e?.currentTarget.value })
       .then((res) => {
         if (res.data?.porcent) {
           setDiscountPorcent(Number(res.data?.porcent));
@@ -72,17 +112,17 @@ export default function Checkout() {
       })
       .finally((f) => setIsSend(false));
   };
-  const pay = async () => {
+  const pay = async (mode, orderNumber) => {
     const invoice = {
       amount: 600,
-      client: "Ahmed malek", // add a text field to allow the user to enter his name, or get it from a context api (depends on the project architecture)
-      client_enail: "ghanamaahmed@gmail.com",
-      mode: "EDAHABIA",
-      invoice_number: 5655,
+      client: `${firstName} ${lastName}`, // add a text field to allow the user to enter his name, or get it from a context api (depends on the project architecture)
+      client_enail: email,
+      mode,
+      invoice_number: orderNumber,
       discount: 0,
-      comment: "test",
-      webhook_url: "https://crowinc.free.beeceptor.com/", // here is the webhook url, use beecptor to easly see the post request and it's body, you will use this in backened to save and validate the transactions.
-      back_url: "https://www.youtube.com/", // to where the user will be redirected after he finish/cancel the payement
+      comment: "empty",
+      webhook_url: "https://crowinc.free.beeceptor.com/",
+      back_url: "https://orders/webhook",
       discount: 0,
       // api_key:
       //   "api_uaxvP7R6F1to33NUoNiyXCiWLuGpKuB4KRi7iGvv04vbrnaCaUO0zb44H6caD6AR",
@@ -97,8 +137,76 @@ export default function Checkout() {
           Accept: "application/json",
         },
       })
-      .then((res) => console.log(res))
+      .then((res) => {
+        if (res.status >= 400) {
+          window.location.href = res.data?.checkout_url;
+        } else {
+          toasty("حدث خطاء", { toastId: "pay", type: "error" });
+        }
+      })
       .catch((err) => console.error(err));
+  };
+  const postOrder = () => {
+    if (isSend) return;
+    setIsSend(true);
+    const req = {
+      userId: user?._id,
+      productsIds: products?.map((e) => ({
+        thumbanil: e?.thumbanil,
+        name: e?.name,
+        price: e?.price,
+        id: e?.id,
+        quntity: e?.quntity,
+        size: e?.size,
+        color: e?.color,
+      })),
+      name: isAuthenticated
+        ? `${user?.firstName} ${user?.lastName}`
+        : firstName,
+      coupon: coupon,
+      adress: adress,
+      phone: phone,
+      email,
+      city: wilaya && baladia ? `${wilaya?.name} ${baladia?.name}` : null,
+      photo: user?.Photo,
+      delivery,
+      shipping,
+    };
+    if (!isAuthenticated) {
+      delete req?.userId;
+      delete req?.photo;
+    }
+    if (!coupon.trim()) {
+      delete req.coupon;
+    }
+    if (!shipping) {
+      delete req.shipping;
+    }
+    Axios.post("/orders", req)
+      .then((res) => {
+        if (res.data.error) {
+          toasty(
+            "نعتذر عن الإزعاج، ولكن يبدو أن بعض المنتجات قد تكون أكبر من الكمية المتاحة حالياً. يرجى تعديل الكميات او حذفها لاستكمال الطلب.",
+            {
+              toastId: "postOrder",
+              type: "warning",
+              autoClose: false,
+            }
+          );
+          setIsSend(false);
+          dispatch(multyUpdateBasket(res.data.error));
+        } else {
+          // pay("EDAHABIA", res.data?.orderNumber);
+        }
+      })
+      .catch((err) => {
+        setIsSend(false);
+        toasty(err?.response?.data || "حدث خطاء", {
+          toastId: "postOrder",
+          type: "error",
+        });
+        console.error(err);
+      });
   };
   return (
     <div className="w-full h-full flex flex-col items-center pt-[75px] gap-10">
@@ -213,152 +321,72 @@ export default function Checkout() {
           </div>
           <div>
             <div className="relative mt-2">
-              <button
-                type="button"
-                className="relative w-full cursor-default rounded-sm py-1.5 pl-3 pr-6 shadow-sm border  border-mainColor focus:outline-none focus:border-blue-500 "
-                aria-haspopup="listbox"
-                aria-expanded="true"
+              <select
+                onChange={(e) => {
+                  const selectedValue = JSON.parse(e.currentTarget.value);
+                  setWilaya({ id: selectedValue.id, name: selectedValue.name });
+                  setBaladia(null);
+                  console.log(selectedValue.name); // or perform other actions based on selection
+                }}
+                className="relative w-full cursor-default bg-transparent rounded-sm py-1.5 shadow-sm border border-mainColor focus:outline-none focus:border-blue-500"
                 aria-labelledby="listbox-label"
               >
-                <span className="flex items-center">
-                  <span className="ml-3 block truncate">wilaya</span>
-                </span>
-                <span className="pointer-events-none absolute inset-y-0 right-0 ml-3 flex items-center pr-2">
-                  <svg
-                    className="h-5 w-5 text-gray-400"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                    aria-hidden="true"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M10 3a.75.75 0 01.55.24l3.25 3.5a.75.75 0 11-1.1 1.02L10 4.852 7.3 7.76a.75.75 0 01-1.1-1.02l3.25-3.5A.75.75 0 0110 3zm-3.76 9.2a.75.75 0 011.06.04l2.7 2.908 2.7-2.908a.75.75 0 111.1 1.02l-3.25 3.5a.75.75 0 01-1.1 0l-3.25-3.5a.75.75 0 01.04-1.06z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </span>
-              </button>
-              <ul
-                className="absolute hidden z-10 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
-                tabIndex={-1}
-                role="listbox"
-                aria-labelledby="listbox-label"
-                aria-activedescendant="listbox-option-3"
-              >
-                <li
-                  className="text-gray-900 relative cursor-default select-none py-2 pl-3 pr-9"
-                  id="listbox-option-0"
-                  role="option"
-                >
-                  <div className="flex items-center">
-                    <img
-                      src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                      alt=""
-                      className="h-5 w-5 flex-shrink-0 rounded-full"
-                    />
-                    {/* Selected: "font-semibold", Not Selected: "font-normal" */}
-                    <span className="font-normal ml-3 block truncate">
-                      Wade Cooper
-                    </span>
-                  </div>
-                  {/*
-    Checkmark, only display for selected option.
-
-    Highlighted: "text-white", Not Highlighted: "text-indigo-600"
-  */}
-                  <span className="text-indigo-600 absolute inset-y-0 right-0 flex items-center pr-4">
-                    <svg
-                      className="h-5 w-5"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                      aria-hidden="true"
+                <option value="" disabled>
+                  الولايات
+                </option>
+                <optgroup label="Options">
+                  {wilayas.map((e, i) => (
+                    <option
+                      key={i}
+                      value={JSON.stringify({ id: e?.id, name: e?.name })}
                     >
-                      <path
-                        fillRule="evenodd"
-                        d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </span>
-                </li>
-                {/* More items... */}
-              </ul>
+                      {e?.ar_name}
+                    </option>
+                  ))}
+                </optgroup>
+              </select>
             </div>
           </div>
 
           <div>
             <div className="relative mt-2">
-              <button
-                type="button"
-                className="relative w-full cursor-default rounded-sm py-1.5 pl-3 pr-6 shadow-sm border  border-mainColor focus:outline-none focus:border-blue-500 "
-                aria-haspopup="listbox"
-                aria-expanded="true"
+              <select
+                onChange={(e) => {
+                  const selectedValue = JSON.parse(e.currentTarget.value);
+                  setBaladia({
+                    id: selectedValue.id,
+                    name: selectedValue.name,
+                  });
+                  // Perform other actions based on the selected value
+                }}
+                className="relative w-full cursor-default bg-transparent rounded-sm py-1.5 shadow-sm border border-mainColor focus:outline-none focus:border-blue-500"
                 aria-labelledby="listbox-label"
               >
-                <span className="flex items-center">
-                  <span className="ml-3 block truncate">wilaya</span>
-                </span>
-                <span className="pointer-events-none absolute inset-y-0 right-0 ml-3 flex items-center pr-2">
-                  <svg
-                    className="h-5 w-5 text-gray-400"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                    aria-hidden="true"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M10 3a.75.75 0 01.55.24l3.25 3.5a.75.75 0 11-1.1 1.02L10 4.852 7.3 7.76a.75.75 0 01-1.1-1.02l3.25-3.5A.75.75 0 0110 3zm-3.76 9.2a.75.75 0 011.06.04l2.7 2.908 2.7-2.908a.75.75 0 111.1 1.02l-3.25 3.5a.75.75 0 01-1.1 0l-3.25-3.5a.75.75 0 01.04-1.06z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </span>
-              </button>
-              <ul
-                className="absolute hidden z-10 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
-                tabIndex={-1}
-                role="listbox"
-                aria-labelledby="listbox-label"
-                aria-activedescendant="listbox-option-3"
-              >
-                <li
-                  className="text-gray-900 relative cursor-default select-none py-2 pl-3 pr-9"
-                  id="listbox-option-0"
-                  role="option"
-                >
-                  <div className="flex items-center">
-                    <img
-                      src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                      alt=""
-                      className="h-5 w-5 flex-shrink-0 rounded-full"
-                    />
-                    {/* Selected: "font-semibold", Not Selected: "font-normal" */}
-                    <span className="font-normal ml-3 block truncate">
-                      Wade Cooper
-                    </span>
-                  </div>
-                  {/*
-    Checkmark, only display for selected option.
-
-    Highlighted: "text-white", Not Highlighted: "text-indigo-600"
-  */}
-                  <span className="text-indigo-600 absolute inset-y-0 right-0 flex items-center pr-4">
-                    <svg
-                      className="h-5 w-5"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                      aria-hidden="true"
+                <option value="" disabled>
+                  البلديات
+                </option>
+                <optgroup label="Options">
+                  {baladias.map((e, i) => (
+                    <option
+                      key={i}
+                      value={JSON.stringify({ id: e?.id, name: e?.name })}
                     >
-                      <path
-                        fillRule="evenodd"
-                        d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </span>
-                </li>
-                {/* More items... */}
-              </ul>
+                      {e?.ar_name}
+                    </option>
+                  ))}
+                </optgroup>
+              </select>
             </div>
+          </div>
+
+          <div className="flex flex-col gap w-full">
+            <p className="font-extralight">عنوان السكن</p>
+            <input
+              value={adress}
+              onChange={(e) => setAdress(e?.currentTarget?.value)}
+              type="text"
+              className="relative w-full cursor-default rounded-sm py-1.5 pl-3 pr-1 shadow-sm border  border-mainColor focus:outline-none focus:border-blue-500"
+            />
           </div>
           <div className="flex flex-col gap w-full">
             <p className="font-extralight">رقم الهاتف</p>
@@ -369,7 +397,17 @@ export default function Checkout() {
               className="relative w-full cursor-default rounded-sm py-1.5 pl-3 pr-1 shadow-sm border  border-mainColor focus:outline-none focus:border-blue-500"
             />
           </div>
-          <button onClick={pay}>pay</button>
+          <div className="flex flex-col gap w-full">
+            <p className="font-extralight">كوبون التخفيض</p>
+            <input
+              value={coupon}
+              onBlur={checkCode}
+              onChange={(e) => setCoupon(e?.currentTarget?.value)}
+              type="text"
+              className="relative w-full cursor-default rounded-sm py-1.5 pl-3 pr-1 shadow-sm border  border-mainColor focus:outline-none focus:border-blue-500"
+            />
+          </div>
+          <button onClick={() => postOrder("EDAHABIA")}>pay</button>
         </div>
       </div>
     </div>

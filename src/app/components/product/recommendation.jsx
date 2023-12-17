@@ -1,6 +1,6 @@
 import React, { memo, useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { A11y, Grid, Navigation, Pagination } from "swiper/modules";
+import { A11y, Grid, Navigation, Pagination, Autoplay } from "swiper/modules";
 import { FaAngleDown } from "react-icons/fa6";
 import "swiper/css";
 import "swiper/css/grid";
@@ -16,11 +16,12 @@ export default memo(function Recommendation({ type, idProduct }) {
   const [count, setCount] = useState(0);
   const [types, setTypes] = useState([]);
   const [input, setInput] = useState("");
-  const {width}=useWidth()
+  const { width } = useWidth();
   const fetch = async (e) => {
     if (e) {
       await fetchProducts(input, type || "الكل")
         .then((res) => {
+          console.log(res.data);
           setIsLoading(false);
           setProducts((prev) => [...res.data.products]);
           setMin(res.data.products?.length);
@@ -59,10 +60,14 @@ export default memo(function Recommendation({ type, idProduct }) {
         <div className="flex justify-center w-full">
           <Swiper
             slidesPerView={"auto"}
-            navigation={width>767?true:false}
+            navigation={width > 767 ? true : false}
             // on last slid is showen
             onReachEnd={more}
-            modules={[Navigation]}
+            modules={[Navigation, Autoplay]}
+            autoplay={{
+              delay: 10000,
+              disableOnInteraction: false,
+            }}
             className="mySwiper w-full"
           >
             {products

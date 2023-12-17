@@ -4,7 +4,7 @@ export default memo(function Card({ product }) {
   return (
     <div className="flex flex-row gap-5 ">
       <Image
-        src={"/img/feature-product-1.jpg"}
+        src={product?.thumbanil}
         width={200}
         height={200}
         className="rounded-lg w-28 h-28"

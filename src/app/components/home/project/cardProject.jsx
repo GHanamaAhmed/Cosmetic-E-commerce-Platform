@@ -33,7 +33,7 @@ export default function CardProject({
   photos,
 }) {
   const [swiper, setSwiper] = useState(null);
-  const [selectedColor, setselectedColor] = useState(0);
+  const [selectedColor, setselectedColor] = useState(-1);
   const [selectedSize, setselectedSize] = useState(-1);
   const swiper2 = useSwiper();
   const { width } = useWidth();
@@ -57,11 +57,17 @@ export default function CardProject({
         name,
         price: promotion && isShowPromotion ? promotion : price,
         quntity: 1,
-        thumbanil: photos?.[selectedColor]?.photos?.[selectedSize],
+        thumbanil:
+          photos?.[photos?.findIndex((e) => e?.color == selectedColor)]
+            ?.photos?.[
+            photos?.[
+              photos?.findIndex((e) => e?.color == selectedColor)
+            ]?.sizes?.findIndex((size) => size == selectedSize)
+          ],
         photos,
         maxQuntity: quntity,
-        size: photos?.[selectedColor]?.sizes?.[selectedSize],
-        color: photos?.[selectedColor]?.color,
+        size: selectedSize,
+        color: selectedColor,
       })
     );
     toasty("تم وضع المنتج في السلة", {
@@ -80,10 +86,7 @@ export default function CardProject({
     }
   };
   return (
-    <div
-      onClick={() => router.push(`../product/${id}`)}
-      className="rounded-md w-[94%] max-w-[280px] h-[400px] overflow-hidden flex shadow-2xl flex-col  justify-between  items-center"
-    >
+    <div className="rounded-md w-[94%] max-w-[280px] h-[400px] overflow-hidden flex shadow-2xl flex-col  justify-between  items-center">
       <div className="relative h-full w-full max-h-[75%] img-project">
         <button
           onClick={toggleSave}
@@ -114,6 +117,7 @@ export default function CardProject({
                 disableOnInteraction: false,
               }}
               modules={[Pagination, Autoplay]}
+              onClick={() => router.push(`../product/${id}`)}
             >
               {photos?.map((e, index) => (
                 <SwiperSlide key={index} className="w-full relative h-full">
@@ -147,24 +151,30 @@ export default function CardProject({
           className="w-full shadow-[inset_4px_0px_8px_0px_#edf2f7] rounded-lg "
         >
           {photos
-            .filter((_, index) => index == selectedColor)?.[0]
-            ?.sizes?.map((size, index) => (
-              <SwiperSlide className="swiper-card " key={index}>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setselectedSize(index);
-                  }}
-                  className={`${
-                    index == selectedSize
-                      ? "border-none bg-mainColor text-white"
-                      : "border-mainColor border-[1.5px]"
-                  }  font-medium  active:border-none active:bg-mainColor active:text-white p-1 m-1 rounded-sm`}
-                >
-                  {size}
-                </button>
-              </SwiperSlide>
-            ))}
+            .filter((e) => e?.color == selectedColor || selectedColor == -1)
+            ?.map((e) =>
+              e?.sizes?.map((size, index) => (
+                <SwiperSlide className="swiper-card " key={index}>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (selectedSize == size) {
+                        setselectedSize(-1);
+                        return;
+                      }
+                      setselectedSize(size);
+                    }}
+                    className={`${
+                      size == selectedSize
+                        ? "border-none bg-mainColor text-white"
+                        : "border-mainColor border-[1.5px]"
+                    }  font-medium active:border-none active:bg-mainColor active:text-white p-1 m-1 rounded-sm`}
+                  >
+                    {size}
+                  </button>
+                </SwiperSlide>
+              ))
+            )}
         </Swiper>
         <div className="flex w-full justify-normal gap-4 items-center">
           <p className="inline font-semibold text-solidHeading">الالوان: </p>
@@ -175,21 +185,29 @@ export default function CardProject({
               autoHeight={true}
               className="w-full "
             >
-              {photos.map((e, index) => (
-                <SwiperSlide key={index} className="swiper-card ">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setselectedColor(index);
-                    }}
-                    key={index}
-                    style={{ backgroundColor: e?.color }}
-                    className={`rounded-full  ${
-                      selectedColor == index ? "ring-4" : ""
-                    } z-50 w-6 h-6`}
-                  ></button>
-                </SwiperSlide>
-              ))}
+              {photos
+                ?.filter(
+                  (e) => e?.sizes?.includes(selectedSize) || selectedSize == -1
+                )
+                ?.map((e, index) => (
+                  <SwiperSlide key={index} className="swiper-card ">
+                    <button
+                      onClick={(el) => {
+                        el.stopPropagation();
+                        if (e?.color == selectedColor) {
+                          setselectedColor(-1);
+                          return;
+                        }
+                        setselectedColor(e?.color);
+                      }}
+                      key={index}
+                      style={{ backgroundColor: e?.color }}
+                      className={`rounded-full  ${
+                        selectedColor == e?.color ? "ring-4" : ""
+                      } z-50 w-6 h-6`}
+                    ></button>
+                  </SwiperSlide>
+                ))}
             </Swiper>
           )}
         </div>
@@ -208,10 +226,16 @@ export default function CardProject({
                       maxQuntity: quntity,
                       quntity: 1,
                       thumbanil:
-                        photos?.[selectedColor]?.photos?.[selectedSize],
-                      photos: photos,
-                      color: photos?.[selectedColor]?.color,
-                      size: photos?.[selectedColor]?.sizes?.[selectedSize],
+                        photos?.[
+                          photos?.findIndex((e) => e?.color == selectedColor)
+                        ]?.photos?.[
+                          photos?.[
+                            photos?.findIndex((e) => e?.color == selectedColor)
+                          ]?.sizes?.findIndex((size) => size == selectedSize)
+                        ],
+                      photos,
+                      color: selectedColor,
+                      size: selectedSize,
                     })
                   );
                   dispatch(changeIsOrder(true));
