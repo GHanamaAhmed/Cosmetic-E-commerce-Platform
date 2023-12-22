@@ -41,6 +41,22 @@ export default function Product({ product }) {
       }, [])
     );
   }, [product]);
+  useEffect(() => {
+    setNumImage(
+      product?.photos
+        ?.filter((e) => selectedColor == e?.color || selectedColor == -1)
+        ?.reduce((preveus, currentV) => {
+          return preveus + currentV?.photos?.length;
+        }, 0)
+    );
+    setPhotos(
+      product?.photos
+        ?.filter((e) => selectedColor == e?.color || selectedColor == -1)
+        ?.reduce((preveus, currentV) => {
+          return [...preveus, ...currentV?.photos];
+        }, [])
+    );
+  }, [selectedColor]);
   const { width } = useWidth();
   const numOfSlide = () => {
     if (width > 767) {
@@ -127,11 +143,10 @@ export default function Product({ product }) {
                       }
                       setselectedSize(size);
                     }}
-                    className={`${
-                      size == selectedSize
+                    className={`${size == selectedSize
                         ? "border-none bg-mainColor text-white"
                         : "border-mainColor border-[1.5px]"
-                    }  font-medium  active:border-none active:bg-mainColor active:text-white p-2 rounded-sm`}
+                      }  font-medium  active:border-none active:bg-mainColor active:text-white p-2 rounded-sm`}
                   >
                     {size}
                   </button>
@@ -154,9 +169,8 @@ export default function Product({ product }) {
                   }}
                   key={index}
                   style={{ backgroundColor: e?.color }}
-                  className={`rounded-full ${
-                    selectedColor == e?.color ? "ring-4" : ""
-                  } w-7 h-7`}
+                  className={`rounded-full ${selectedColor == e?.color ? "ring-4" : ""
+                    } w-7 h-7`}
                 ></button>
               ))}
           </div>
@@ -216,11 +230,11 @@ export default function Product({ product }) {
                             (e) => e?.color == selectedColor
                           )
                         ]?.photos?.[
-                          product?.photos?.[
-                            product?.photos?.findIndex(
-                              (e) => e?.color == selectedColor
-                            )
-                          ]?.sizes?.findIndex((size) => size == selectedSize)
+                        product?.photos?.[
+                          product?.photos?.findIndex(
+                            (e) => e?.color == selectedColor
+                          )
+                        ]?.sizes?.findIndex((size) => size == selectedSize)
                         ],
                       photos: product?.photos,
                       color: selectedColor,
@@ -257,11 +271,11 @@ export default function Product({ product }) {
                             (e) => e?.color == selectedColor
                           )
                         ]?.photos?.[
-                          product?.photos?.[
-                            product?.photos?.findIndex(
-                              (e) => e?.color == selectedColor
-                            )
-                          ]?.sizes?.findIndex((size) => size == selectedSize)
+                        product?.photos?.[
+                          product?.photos?.findIndex(
+                            (e) => e?.color == selectedColor
+                          )
+                        ]?.sizes?.findIndex((size) => size == selectedSize)
                         ],
                       photos: product?.photos,
                       color: selectedColor,
@@ -295,9 +309,8 @@ export default function Product({ product }) {
                 معلومات المنتج
               </button>
               <FaAngleDown
-                className={`${
-                  isShowDescription ? "rotate-180" : ""
-                } absolute left-3 top-1/2 -translate-y-1/2`}
+                className={`${isShowDescription ? "rotate-180" : ""
+                  } absolute left-3 top-1/2 -translate-y-1/2`}
               />
             </div>
             {isShowDescription && <p>{product?.description}</p>}

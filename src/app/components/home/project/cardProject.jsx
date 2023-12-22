@@ -1,5 +1,5 @@
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { memo, useState } from "react";
 import { FiShoppingCart } from "react-icons/fi";
 import { Swiper, SwiperSlide, useSwiper } from "swiper/react";
 import { A11y, Navigation, Pagination, Autoplay } from "swiper/modules";
@@ -18,7 +18,7 @@ import {
 import Image from "next/image";
 import { toasty } from "@/app/components/toasty/toast";
 import { useRouter } from "@/app/libs/router-events/patch-router/router";
-export default function CardProject({
+export default memo(function CardProject({
   id,
   name,
   price,
@@ -60,9 +60,9 @@ export default function CardProject({
         thumbanil:
           photos?.[photos?.findIndex((e) => e?.color == selectedColor)]
             ?.photos?.[
-            photos?.[
-              photos?.findIndex((e) => e?.color == selectedColor)
-            ]?.sizes?.findIndex((size) => size == selectedSize)
+          photos?.[
+            photos?.findIndex((e) => e?.color == selectedColor)
+          ]?.sizes?.findIndex((size) => size == selectedSize)
           ],
         photos,
         maxQuntity: quntity,
@@ -80,19 +80,13 @@ export default function CardProject({
       setIsSave(false);
     }, 1000);
   };
-  const handleNextClick = () => {
-    if (swiper) {
-      swiper.slideNext();
-    }
-  };
   return (
     <div className="rounded-md w-[94%] max-w-[280px] h-[400px] overflow-hidden flex shadow-2xl flex-col  justify-between  items-center">
       <div className="relative h-full w-full max-h-[75%] img-project">
         <button
           onClick={toggleSave}
-          className={`rounded-full z-10 p-2 absolute right-2 top-2 ${
-            !isSave ? "bg-white" : "bg-scandaryColor"
-          }`}
+          className={`rounded-full z-10 p-2 absolute right-2 top-2 ${!isSave ? "bg-white" : "bg-scandaryColor"
+            }`}
         >
           {!isSave ? (
             <LuShoppingCart size={15} className={`stroke-basketColor`} />
@@ -119,19 +113,33 @@ export default function CardProject({
               modules={[Pagination, Autoplay]}
               onClick={() => router.push(`../product/${id}`)}
             >
-              {photos?.map((e, index) => (
-                <SwiperSlide key={index} className="w-full relative h-full">
-                  <Image
-                    fill
-                    crossOrigin="anonymous"
-                    className="h-full w-full object-cover"
-                    src={
-                      e?.photos?.[Math.floor(Math.random() * e?.photos?.length)]
-                    }
-                    alt=""
-                  />
-                </SwiperSlide>
-              ))}
+              {photos
+                ?.filter((e) => e?.color == selectedColor || selectedColor == -1)
+                ?.map((e, index) => selectedColor == -1 ? (
+                  <SwiperSlide key={index} className="w-full relative h-full">
+                    <Image
+
+                      fill
+                      crossOrigin="anonymous"
+                      className="h-full w-full object-cover"
+                      src={e?.photos?.[0]}
+                      alt=""
+                    />
+                  </SwiperSlide>
+                ) : (
+                  e?.photos?.map((photo, index) => (
+                    <SwiperSlide key={index} className="w-full relative h-full">
+                      <Image
+                        fill
+                        crossOrigin="anonymous"
+                        className="h-full w-full object-cover"
+                        src={photo}
+                        alt=""
+                      />
+                    </SwiperSlide>
+                  ))
+                )
+                )}
             </Swiper>
           </div>
         </div>
@@ -164,11 +172,10 @@ export default function CardProject({
                       }
                       setselectedSize(size);
                     }}
-                    className={`${
-                      size == selectedSize
-                        ? "border-none bg-mainColor text-white"
-                        : "border-mainColor border-[1.5px]"
-                    }  font-medium active:border-none active:bg-mainColor active:text-white p-1 m-1 rounded-sm`}
+                    className={`${size == selectedSize
+                      ? "border-none bg-mainColor text-white"
+                      : "border-mainColor border-[1.5px]"
+                      }  font-medium active:border-none active:bg-mainColor active:text-white p-1 m-1 rounded-sm`}
                   >
                     {size}
                   </button>
@@ -202,9 +209,8 @@ export default function CardProject({
                       }}
                       key={index}
                       style={{ backgroundColor: e?.color }}
-                      className={`rounded-full  ${
-                        selectedColor == e?.color ? "ring-4" : ""
-                      } z-50 w-6 h-6`}
+                      className={`rounded-full  ${selectedColor == e?.color ? "ring-4" : ""
+                        } z-50 w-6 h-6`}
                     ></button>
                   </SwiperSlide>
                 ))}
@@ -229,9 +235,9 @@ export default function CardProject({
                         photos?.[
                           photos?.findIndex((e) => e?.color == selectedColor)
                         ]?.photos?.[
-                          photos?.[
-                            photos?.findIndex((e) => e?.color == selectedColor)
-                          ]?.sizes?.findIndex((size) => size == selectedSize)
+                        photos?.[
+                          photos?.findIndex((e) => e?.color == selectedColor)
+                        ]?.sizes?.findIndex((size) => size == selectedSize)
                         ],
                       photos,
                       color: selectedColor,
@@ -268,4 +274,4 @@ export default function CardProject({
       </div>
     </div>
   );
-}
+})

@@ -6,7 +6,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import { useEffect, useRef, useState, useTransition } from "react";
 import { fetchProducts } from "@/app/libs/products";
-export default function Project({ textAlign, widthContainer }) {
+export default function Project() {
   const scrollContainerRef = useRef(null);
   const [isLoading, setIsLoading] = useState(true);
   const [products, setProducts] = useState([]);
