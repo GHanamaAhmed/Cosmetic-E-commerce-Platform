@@ -1,11 +1,9 @@
-"use client";
-import { useAppSelector } from "@/app/hooks/reduxHooks";
-import React, { useEffect } from "react";
+import React from "react";
 import { FaFacebookF } from "react-icons/fa6";
 import { FaInstagram } from "react-icons/fa";
-export default function Contacts() {
-  const { infoAdmin } = useAppSelector((store) => store.account);
-  useEffect(()=>console.log(infoAdmin),[infoAdmin])
+import { Axios } from "@/app/libs/axios";
+export default async function Contacts() {
+  const infoAdmin  = (await Axios.get("/info")).data;
   return (
     <div className="flex flex-col w-full items-center justify-center mt-6 mb-3 py-2">
       <div className="w-10/12 flex flex-col md:flex-row md:items-center md:justify-between">

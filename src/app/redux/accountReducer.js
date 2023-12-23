@@ -22,18 +22,6 @@ const logout = createAsyncThunk(
     }
   }
 );
-
-const getInfoAdmin = createAsyncThunk(
-  "account/getInfoAmin",
-  async (req, { fulfillWithValue, rejectWithValue }) => {
-    try {
-      const res = await Axios.get("/info");
-      return fulfillWithValue(res.data);
-    } catch (error) {
-      return rejectWithValue(error);
-    }
-  }
-);
 const accountSlice = createSlice({
   name: "account",
   initialState: {
@@ -81,17 +69,8 @@ const accountSlice = createSlice({
         state.error = error;
         state.isLoading = false;
       })
-      .addCase(getInfoAdmin.fulfilled, (state, { payload }) => {
-        for (const key of Object.keys(state.infoAdmin)) {
-          state.infoAdmin[key] = payload?.[key];
-        }
-        state.isLoading = false;
-      })
-      .addCase(getInfoAdmin.rejected, (state, { error }) => {
-        state.error = error;
-        state.isLoading = false;
-      });
+      
   },
 });
-export { getInfo, logout, getInfoAdmin };
+export { getInfo, logout };
 export default accountSlice.reducer;

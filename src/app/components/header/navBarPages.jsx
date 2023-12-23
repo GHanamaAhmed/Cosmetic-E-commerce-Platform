@@ -1,18 +1,17 @@
 import React from 'react'
-import Link from 'next/link'
+import { Link } from '@/app/libs/router-events/patch-router/link'
 export default function NavBarPages() {
-    return (
-			<ul className="flex md:flex-row-reverse justify-between flex-col items-start md:items-center my-4 md:my-0 px-3 md:px-0 w-fit gap-4 md:gap-10">
-				<li className="dark:text-darkContent text-lightContent cursor-pointer">
-					<Link href={"/"}>Home</Link>
-				</li>
-				<li className="dark:text-darkContent text-lightContent cursor-pointer">
-					<Link href={"/account"}>User</Link>
-				</li>
-				<li className="dark:text-darkContent text-lightContent cursor-pointer">
-					<Link href={"/orders"}>history</Link>
-				</li>
-
-			</ul>
-		);
+	return (
+		<ul className="flex md:flex-row-reverse justify-between flex-col items-start md:items-center my-4 md:my-0 px-3 md:px-0 w-fit gap-4 md:gap-10">
+			<li className="dark:text-darkContent text-lightContent cursor-pointer">
+				<Link href={"/"}>Home</Link>
+			</li>
+			<li className="dark:text-darkContent text-lightContent cursor-pointer">
+				<Link href={"/account"}>User</Link>
+			</li>
+			<li className="dark:text-darkContent text-lightContent cursor-pointer">
+				<Link href={"/orders"}>history</Link>
+			</li>
+		</ul>
+	);
 }

@@ -1,8 +1,6 @@
 import { memo} from "react";
 import Tech from "./tech/tech";
 import Project from "./project/project";
-import Contacts from "./contacts/contacts";
-
 export default memo(function Home() {
   return (
     <div className="w-full flex flex-col items-center pt-[75px] ">
@@ -30,7 +28,6 @@ export default memo(function Home() {
       </div>
       <Tech />
       <Project widthContainer={"w-10/12"} textAlign={"items-center"} />
-      <Contacts />
     </div>
   );
 });

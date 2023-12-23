@@ -6,8 +6,10 @@ import "swiper/css";
 import "swiper/css/navigation";
 import { useEffect, useRef, useState, useTransition } from "react";
 import { fetchProducts } from "@/app/libs/products";
+import { useSearchParams } from "next/navigation";
 export default function Project() {
   const scrollContainerRef = useRef(null);
+  const [isMoreLoading, setIsMoreLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [products, setProducts] = useState([]);
   const [min, setMin] = useState(0);
@@ -16,10 +18,11 @@ export default function Project() {
   const [type, setType] = useState("الكل");
   const [input, setInput] = useState("");
   const [positionScroll, setPositinScroll] = useState(globalThis.screenY);
+  const searchParams = useSearchParams();
   const fetch = async (e) => {
-    setIsLoading(true);
     if (e) {
-      await fetchProducts(input, type)
+      setIsLoading(true);
+      await fetchProducts(searchParams.get("s") || "", type)
         .then((res) => {
           setTimeout(() => {
             setIsLoading(false);
@@ -34,10 +37,11 @@ export default function Project() {
           setIsLoading(false);
         });
     } else {
-      await fetchProducts(input, type, min)
+      setIsMoreLoading(true);
+      await fetchProducts(searchParams.get("s") || "", type, min)
         .then((res) => {
           setTimeout(() => {
-            setIsLoading(false);
+            setIsMoreLoading(false);
             res.data.products?.length &&
               setProducts((prev) => [...prev, ...res.data.products]);
           }, 1000);
@@ -48,14 +52,14 @@ export default function Project() {
         })
         .catch((err) => {
           console.error(err);
-          setIsLoading(false);
+          setIsMoreLoading(false);
         });
     }
   };
 
   useEffect(() => {
     fetch(true);
-  }, [type]);
+  }, [searchParams]);
 
   const more = () => {
     fetch();
@@ -63,7 +67,7 @@ export default function Project() {
 
   const handleScroll = () => {
     console.log("1");
-    if (!isLoading) {
+    if (!isMoreLoading) {
       console.log("2");
       if (
         window.innerHeight + window.scrollY >=
@@ -82,7 +86,7 @@ export default function Project() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [positionScroll]);
   return (
-    <div className="w-full h-full flex flex-col items-center gap-5">
+    <div id="products" className="w-full h-full flex flex-col items-center gap-5">
       <div className="w-[90%]">
         <TitleSection
           title={"المنتوجات"}
@@ -90,7 +94,7 @@ export default function Project() {
         />
       </div>
       <div className="w-full h-full flex justify-center">
-        {products.length > 0 && (
+        {(products.length > 0 && !isLoading) && (
           <div
             ref={scrollContainerRef}
             className="w-[90%] h-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 justify-items-center gap-5"
@@ -114,17 +118,17 @@ export default function Project() {
             ))}
           </div>
         )}
-        {products.length === 0 && !isLoading && (
+        {products.length === 0 && !isLoading && !isMoreLoading && (
           <div className="flex justify-center items-center w-full h-full">
             <p className="text-4xl font-bold text-gray-500">لا يوجد منتوجات</p>
           </div>
         )}
       </div>
-      {isLoading && (
+      {(isMoreLoading || isLoading) && (
         <div role="status">
           <svg
             aria-hidden="true"
-            class="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
+            className="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
             viewBox="0 0 100 101"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
@@ -138,7 +142,7 @@ export default function Project() {
               fill="currentFill"
             />
           </svg>
-          <span class="sr-only">Loading...</span>
+          <span className="sr-only">Loading...</span>
         </div>
       )}
     </div>

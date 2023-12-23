@@ -318,7 +318,6 @@ export default function Product({ product }) {
         </div>
       </div>
       <Recommendation type={product?.type} idProduct={product?._id} />
-      <Contacts />
     </div>
   );
 }

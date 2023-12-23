@@ -1,11 +1,9 @@
-"use client";
-import React from "react";
+import React, { memo } from "react";
 import { FaFacebookF } from "react-icons/fa6";
 import { FaInstagram } from "react-icons/fa";
-import { useAppSelector } from "@/app/hooks/reduxHooks";
-
-export default function Contact() {
-  const { infoAdmin } = useAppSelector((store) => store.account);
+import { Axios } from "@/app/libs/axios";
+export default memo(async function Contact() {
+  const infoAdmin = (await Axios.get("/info")).data;
   return (
     <>
       {(infoAdmin?.facebook || infoAdmin?.instagram) && (
@@ -37,3 +35,4 @@ export default function Contact() {
     </>
   );
 }
+)

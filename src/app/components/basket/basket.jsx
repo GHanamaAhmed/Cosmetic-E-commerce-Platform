@@ -1,9 +1,10 @@
 import Image from "next/image";
 import React, { useMemo } from "react";
-import { useAppSelector,useAppDispatch } from "@/app/hooks/reduxHooks";
+import { useAppSelector, useAppDispatch } from "@/app/hooks/reduxHooks";
 import Card from "./card";
 import { useRouter } from "@/app/libs/router-events/patch-router/router";
 import { changeIsOrder } from "@/app/redux/basketReducer";
+import { IoCloseOutline } from "react-icons/io5";
 export default function Basket() {
   const { products } = useAppSelector((state) => state.basket);
   const dispatch = useAppDispatch();
@@ -25,6 +26,10 @@ export default function Basket() {
 
   return (
     <div className="w-full gap-2">
+      <div className="w-full flex justify-between items-center py-5 bg-lightContent">
+        <p className="">سلة المشتريات الخاصة بك</p>
+        <IoCloseOutline className={`cursor-pointer `} size={30} />
+      </div>
       {products?.map((e, i) => (
         <Card product={e} index={i} key={i} />
       ))}
