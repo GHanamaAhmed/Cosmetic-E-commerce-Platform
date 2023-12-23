@@ -5,6 +5,8 @@ import Card from "./card";
 import { useRouter } from "@/app/libs/router-events/patch-router/router";
 import { changeIsOrder } from "@/app/redux/basketReducer";
 import { IoCloseOutline } from "react-icons/io5";
+import { IoIosCloseCircleOutline } from "react-icons/io";
+
 export default function Basket() {
   const { products } = useAppSelector((state) => state.basket);
   const dispatch = useAppDispatch();
@@ -25,15 +27,13 @@ export default function Basket() {
   }, [products]);
 
   return (
-    <div className="w-full gap-2">
-      <div className="w-full flex justify-between items-center py-5 bg-lightContent">
-        <p className="">سلة المشتريات الخاصة بك</p>
-        <IoCloseOutline className={`cursor-pointer `} size={30} />
+    <div className="w-full relative flex-1 max-h-full flex flex-col justify-between pb-3 gap-2">
+      <div className="flex flex-col max-h-full flex-1 mb-[80px] overflow-auto">
+        {products?.map((e, i) => (
+          <Card product={e} index={i} key={i} />
+        ))}
       </div>
-      {products?.map((e, i) => (
-        <Card product={e} index={i} key={i} />
-      ))}
-      <div className="w-full flex items-center flex-col gap-1">
+      <div className="w-full absolute bottom-0 -translate-y-3/4 bg-white flex items-center flex-col gap-1">
         <div className="w-full flex justify-around">
           <p>المجموع:</p>
           <p>{some} دج</p>

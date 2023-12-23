@@ -9,6 +9,7 @@ import { useRouter } from "@/app/libs/router-events/patch-router/router";
 import { CiSearch } from "react-icons/ci";
 import { IoCloseOutline } from "react-icons/io5";
 import { usePathname, useSearchParams } from "next/navigation"
+import { IoIosCloseCircleOutline } from "react-icons/io";
 export default memo(function Header() {
   const [isBasketActive, setIsBasketActive] = useState(false);
   const [positionScroll, setPositinScroll] = useState(globalThis.screenY);
@@ -49,7 +50,7 @@ export default memo(function Header() {
   )
 
   const handleSearchQuery = (e) => {
-    if (e?.key === 'Enter'|| e?.type == "click") {
+    if (e?.key === 'Enter' || e?.type == "click") {
       router.replace("/" + '?' + createQueryString('s', refSearch.current.value) + "#products")
     }
   }
@@ -69,7 +70,7 @@ export default memo(function Header() {
           <div className={`transition-all px-2  md:w-fit h-full z-40 right-0 bg-white border top-0 peer-focus:border-black`}>
             <div className="flex items-center">
               <input defaultValue={searchParams.get("s")} onKeyDown={handleSearchQuery} ref={refSearch} type="text" className="peer focus:border-none focus:outline-none" placeholder="Search..." />
-              <CiSearch className="cursor-pointer my-2" onClick={handleSearchQuery}  size={30} />
+              <CiSearch className="cursor-pointer my-2" onClick={handleSearchQuery} size={30} />
             </div>
           </div>
         </div>
@@ -96,9 +97,13 @@ export default memo(function Header() {
         </div>
       </header>
       <div
-        className={`fixed transition-all w-full md:w-fit lg:4/12 h-full ${isBasketActive ? "" : "translate-x-full"
+        className={`fixed transition-all flex flex-col w-full md:w-fit lg:4/12 h-screen ${isBasketActive ? "" : "translate-x-full"
           } z-50 right-0 bg-white shadow-sm top-0`}
       >
+        <div className="w-full flex justify-between items-center py-2 px-3 bg-[#F6F4EB]">
+          <p className="">سلة المشتريات الخاصة بك</p>
+          <IoIosCloseCircleOutline className={`cursor-pointer `} size={30} onClick={(e) => setIsBasketActive(false)} />
+        </div>
         <Basket />
       </div>
     </>
