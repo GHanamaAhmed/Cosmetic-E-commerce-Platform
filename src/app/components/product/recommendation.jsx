@@ -6,7 +6,7 @@ import "swiper/css";
 import "swiper/css/grid";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
-import CardProject from "../home/project/cardProject";
+import CardProject from "../home/project/cardProduct";
 import { fetchProducts } from "@/app/libs/products";
 import { useWidth } from "@/app/hooks/useWidth";
 export default memo(function Recommendation({ type, idProduct }) {

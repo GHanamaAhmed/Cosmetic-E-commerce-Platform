@@ -1,66 +1,49 @@
 "use client";
 import TitleSection from "../titleSection";
-import CardProject from "./cardProject";
+import CardProject from "./cardProduct";
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/navigation";
-import { useEffect, useRef, useState, useTransition } from "react";
+import { useEffect, useRef, useState } from "react";
 import { fetchProducts } from "@/app/libs/products";
 import { useSearchParams } from "next/navigation";
-export default function Project() {
+export default function Project({
+  initialData,
+}) {
   const scrollContainerRef = useRef(null);
   const [isMoreLoading, setIsMoreLoading] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [products, setProducts] = useState([]);
-  const [min, setMin] = useState(0);
-  const [count, setCount] = useState(0);
-  const [types, setTypes] = useState([]);
-  const [type, setType] = useState("الكل");
-  const [input, setInput] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [products, setProducts] = useState(initialData?.products || []);
+  const [min, setMin] = useState(initialData?.products?.length || 0);
+  const [count, setCount] = useState(initialData?.count || 0);
+  const [types, setTypes] = useState(initialData?.types || []);
   const [positionScroll, setPositinScroll] = useState(globalThis.screenY);
   const searchParams = useSearchParams();
-  const fetch = async (e) => {
-    if (e) {
-      setIsLoading(true);
-      await fetchProducts(searchParams.get("s") || "", type)
-        .then((res) => {
-          setTimeout(() => {
-            setIsLoading(false);
-            setProducts((prev) => [...res.data.products]);
-          }, 1000);
-          setMin(res.data.products?.length);
-          setTypes(res.data?.types);
-          setCount(res.data?.count);
-        })
-        .catch((err) => {
-          console.error(err);
-          setIsLoading(false);
-        });
-    } else {
-      setIsMoreLoading(true);
-      await fetchProducts(searchParams.get("s") || "", type, min)
-        .then((res) => {
-          setTimeout(() => {
-            setIsMoreLoading(false);
-            res.data.products?.length &&
-              setProducts((prev) => [...prev, ...res.data.products]);
-          }, 1000);
-
-          setMin((prev) => res.data.products?.length + prev);
-          setTypes(res.data?.types);
-          setCount(res.data?.count);
-        })
-        .catch((err) => {
-          console.error(err);
+  const fetch = async () => {
+    setIsMoreLoading(true);
+    await fetchProducts(searchParams.get("s") || "", searchParams.get("type") || "الكل", min)
+      .then((res) => {
+        setTimeout(() => {
           setIsMoreLoading(false);
-        });
-    }
+          res.data.products?.length &&
+            setProducts((prev) => [...prev, ...res.data.products]);
+        }, 1000);
+        setMin((prev) => res.data.products?.length + prev);
+        setTypes(res.data?.types);
+        setCount(res.data?.count);
+      })
+      .catch((err) => {
+        console.error(err);
+        setIsMoreLoading(false);
+      });
   };
-
   useEffect(() => {
-    fetch(true);
-  }, [searchParams]);
-
+    console.log(initialData);
+    setProducts(initialData?.products)
+    setCount(initialData?.count)
+    setMin(initialData?.products?.length)
+    setTypes(initialData?.types)
+  }, [initialData])
   const more = () => {
     fetch();
   };
