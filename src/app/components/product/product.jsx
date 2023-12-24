@@ -2,21 +2,18 @@
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { A11y, Grid, Navigation, Pagination } from "swiper/modules";
+import { Pagination } from "swiper/modules";
 import { FaAngleDown } from "react-icons/fa6";
 import "swiper/css";
 import "swiper/css/grid";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 import { useWidth } from "@/app/hooks/useWidth";
-import Contacts from "../home/contacts/contacts";
-import Recommendation from "./recommendation";
 import { useAppDispatch } from "@/app/hooks/reduxHooks";
 import {
   addToBasket,
   changeIsOrder,
   emptyBasket,
-  updateBasket,
 } from "@/app/redux/basketReducer";
 import { useRouter } from "next/navigation";
 import { toasty } from "../toasty/toast";
@@ -84,7 +81,7 @@ export default function Product({ product }) {
     }
   };
   return (
-    <div className="pt-[75px] ">
+    <>
       <div className="hidden relative h-[150px] md:flex px-10 items-end py-6">
         <Image className="-z-10" src="/img/image 3.jpg" fill alt="" />
         <p className="text-white text-4xl">خطوات الشراء</p>
@@ -144,8 +141,8 @@ export default function Product({ product }) {
                       setselectedSize(size);
                     }}
                     className={`${size == selectedSize
-                        ? "border-none bg-mainColor text-white"
-                        : "border-mainColor border-[1.5px]"
+                      ? "border-none bg-mainColor text-white"
+                      : "border-mainColor border-[1.5px]"
                       }  font-medium  active:border-none active:bg-mainColor active:text-white p-2 rounded-sm`}
                   >
                     {size}
@@ -317,7 +314,6 @@ export default function Product({ product }) {
           </div>
         </div>
       </div>
-      <Recommendation type={product?.type} idProduct={product?._id} />
-    </div>
+    </>
   );
 }
