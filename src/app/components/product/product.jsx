@@ -26,6 +26,7 @@ export default function Product({ product }) {
   const [selectedColor, setselectedColor] = useState(-1);
   const [isShowDescription, setIsShowDescription] = useState(false);
   const [quntity, setQuntity] = useState(1);
+  const { width } = useWidth();
   useEffect(() => {
     setNumImage(
       product?.photos?.reduce((preveus, currentV) => {
@@ -54,23 +55,22 @@ export default function Product({ product }) {
         }, [])
     );
   }, [selectedColor]);
-  const { width } = useWidth();
   const numOfSlide = () => {
-    if (width > 767) {
+    if (width > 767 && numImage != 1) {
       return Math.ceil(numImage / 4);
     } else {
       return numImage;
     }
   };
   const imageStart = (index) => {
-    if (width > 767) {
+    if (width > 767 && numImage != 1) {
       return 4 * index;
     } else {
       return index;
     }
   };
   const imageEnd = (index) => {
-    if (width > 767) {
+    if (width > 767 && numImage != 1) {
       if (index + 1 != numOfSlide()) {
         return 4 * (index + 1);
       } else {
@@ -84,19 +84,21 @@ export default function Product({ product }) {
     <>
       <div className="hidden relative h-[150px] md:flex px-10 items-end py-6">
         <Image className="-z-10" src="/img/image 3.jpg" fill alt="" />
-        <p className="text-white text-4xl">خطوات الشراء</p>
+        <p className="text-white text-4xl">المنتج</p>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 md:pt-7">
         <div className="relative w-full h-[230px] md:min-h-[400px] px-3">
           <Swiper
             slidesPerView={1}
             spaceBetween={30}
+            pagination={true}
+            lazyPreloadPrevNext={1}
             modules={[Pagination]}
-            className="w-full h-full   shadow-[inset_0px_20px_20px_10px_#f7fafc]"
+            className="w-full h-full shadow-[inset_0px_20px_20px_10px_#f7fafc]"
           >
             {[...Array(numOfSlide())].map((_, index) => (
               <SwiperSlide
-                className={`swiper-grid relative h-full w-full m-1 `}
+                className={`${width > 767 && numImage !== 1 ? "swiper-grid" : ""} relative h-full w-full`}
                 key={index}
               >
                 {photos

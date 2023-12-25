@@ -103,6 +103,7 @@ export default memo(function CardProject({
               slidesPerView={1}
               spaceBetween={10}
               className="w-full h-full"
+              lazyPreloadPrevNext={1}
               pagination={{
                 type: "progressbar",
               }}

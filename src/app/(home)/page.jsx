@@ -3,11 +3,8 @@ import { memo } from "react";
 import Tech from "@/app/components/home/tech/tech";
 import Project from "@/app/components/home/project/products";
 import { fetchProducts as fetchP } from "@/app/libs/products";
-export default memo(async function page({searchParams}) {
-  const fetchProducts = async () => {
-    const initialData = await fetchP(searchParams?.s || "", searchParams?.type || "الكل").then((res) => res.data);
-    return <Project initialData={initialData} />;
-  };
+export default memo(async function page({ searchParams }) {
+  const initialData = await fetchP(searchParams?.s || "", searchParams?.type || "الكل").then((res) => res.data);
   return <div className="w-full flex flex-col items-center pt-[75px] ">
     <div className="flex flex-col bg-caderSection justify-center items-center relative w-full">
       <img className="absolute w-full h-full object-cover" src="./img/amy-shamblen-xwM61TPMlYk-unsplash.jpg" alt="" />
@@ -30,9 +27,7 @@ export default memo(async function page({searchParams}) {
       </div>
     </div>
     <Tech />
-    {
-     await fetchProducts()
-    }
+    <Project initialData={initialData} />
   </div>;
 }
 )

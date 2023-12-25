@@ -8,30 +8,29 @@ import { SlBasketLoaded } from "react-icons/sl";
 import { useRouter } from "@/app/libs/router-events/patch-router/router";
 import { CiSearch } from "react-icons/ci";
 import { IoCloseOutline } from "react-icons/io5";
-import { usePathname, useSearchParams } from "next/navigation"
+import { useSearchParams } from "next/navigation"
 import { IoIosCloseCircleOutline } from "react-icons/io";
-export default memo(function Header() {
+export default function Header() {
   const [isBasketActive, setIsBasketActive] = useState(false);
-  const [positionScroll, setPositinScroll] = useState(globalThis.screenY);
+  const [positionScroll, setPositinScroll] = useState(typeof window !== "undefined" ? window.screenY : 0);
   const [headerPosition, setHeaderPosition] = useState("");
   const [isSearchVisible, setIsSearchVisible] = useState(false);
   const refSearch = useRef(null);
   const router = useRouter();
   const searchParams = useSearchParams();
-  const pathname = usePathname();
   useEffect(() => {
     const handlePosition = () => {
-      if (positionScroll < globalThis.scrollY) {
+      if (positionScroll < window.scrollY) {
         if (isBasketActive == false) {
           setHeaderPosition("-translate-y-full");
         }
       } else {
         setHeaderPosition("");
       }
-      setPositinScroll(globalThis.scrollY);
+      setPositinScroll(window.scrollY);
     };
-    globalThis.addEventListener("scroll", handlePosition);
-    return () => globalThis.removeEventListener("scroll", handlePosition);
+    window.addEventListener("scroll", handlePosition);
+    return () => window.removeEventListener("scroll", handlePosition);
   }, [positionScroll]);
   const handleMenu = () => {
     setIsBasketActive((prevValue) => !prevValue);
@@ -48,7 +47,6 @@ export default memo(function Header() {
     },
     [searchParams]
   )
-
   const handleSearchQuery = (e) => {
     if (e?.key === 'Enter' || e?.type == "click") {
       router.replace("/" + '?' + createQueryString('s', refSearch.current.value) + "#products")
@@ -108,4 +106,4 @@ export default memo(function Header() {
       </div>
     </>
   );
-});
+};

@@ -1,7 +1,5 @@
 import React from 'react'
 import NavBarPages from '../header/navBarPages'
-import Contact from '../header/contact'
-
 export default function Footer() {
     const Classes =
 			"bg-gradient-to-r from-teal-600  to-orange-600 bg-clip-text text-transparent";
