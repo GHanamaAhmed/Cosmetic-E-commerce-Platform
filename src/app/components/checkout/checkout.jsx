@@ -394,7 +394,7 @@ export default function Checkout() {
               className="relative w-full cursor-default rounded-sm py-1.5 pl-3 pr-1 shadow-sm border  border-mainColor focus:outline-none focus:border-blue-500"
             />
           </div>
-         <div className="flex justify-around">
+         <div className="flex justify-around w-full">
          <button onClick={() => postOrder("EDAHABIA")}>
             <Image
               src={
