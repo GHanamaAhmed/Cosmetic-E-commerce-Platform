@@ -42,18 +42,35 @@ export default function Product({ product }) {
   useEffect(() => {
     setNumImage(
       product?.photos
-        ?.filter((e) => selectedColor == e?.color || selectedColor == -1)
+        ?.filter((e) => selectedColor === e?.color || selectedColor === -1)
         ?.reduce((preveus, currentV) => {
           return preveus + currentV?.photos?.length;
         }, 0)
     );
     setPhotos(
       product?.photos
-        ?.filter((e) => selectedColor == e?.color || selectedColor == -1)
+        ?.filter((e) => selectedColor === e?.color || selectedColor === -1)
         ?.reduce((preveus, currentV) => {
           return [...preveus, ...currentV?.photos];
         }, [])
     );
+  }, [selectedColor]);
+  useEffect(() => {
+    if (
+      product?.photos?.[0]?.color === "" ||
+      product?.photos?.[0]?.color === undefined
+    ) {
+      setselectedColor("");
+    }
+  }, [product?.photos]);
+  useEffect(() => {
+    if (
+      product?.photos
+        ?.filter((e) => e?.color === selectedColor || selectedColor === -1)
+        ?.every((e) => !e.sizes?.length)
+    ) {
+      setselectedSize("");
+    }
   }, [selectedColor]);
   const numOfSlide = () => {
     if (width > 767 && numImage != 1) {
@@ -98,7 +115,9 @@ export default function Product({ product }) {
           >
             {[...Array(numOfSlide())].map((_, index) => (
               <SwiperSlide
-                className={`${width > 767 && numImage !== 1 ? "swiper-grid" : ""} relative h-full w-full`}
+                className={`${
+                  width > 767 && numImage !== 1 ? "swiper-grid" : ""
+                } relative h-full w-full`}
                 key={index}
               >
                 {photos
@@ -128,51 +147,64 @@ export default function Product({ product }) {
               <p className="text-gray-400 line-through">{product?.price} دج</p>
             </div>
           )}
-          <div className="flex flex-wrap gap-2">
-            {product?.photos
-              ?.filter((e) => selectedColor == e?.color || selectedColor == -1)
-              ?.map((e) =>
-                e?.sizes?.map((size, index) => (
+          {product?.photos?.filter(
+            (e) => e?.color === selectedColor || selectedColor === -1
+          )?.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {product?.photos
+                ?.filter(
+                  (e) => selectedColor === e?.color || selectedColor === -1
+                )
+                ?.map((e) =>
+                  e?.sizes?.map((size, index) => (
+                    <button
+                      key={index}
+                      onClick={() => {
+                        if (size === selectedSize) {
+                          setselectedSize(-1);
+                          return;
+                        }
+                        setselectedSize(size);
+                      }}
+                      className={`${
+                        size === selectedSize
+                          ? "border-none bg-mainColor text-white"
+                          : "border-mainColor border-[1.5px]"
+                      }  font-medium  active:border-none active:bg-mainColor active:text-white p-2 rounded-sm`}
+                    >
+                      {size}
+                    </button>
+                  ))
+                )}
+            </div>
+          )}
+          {product?.photos?.[0]?.color !== "" && (
+            <div className="flex gap-2">
+              {product?.photos
+                ?.filter(
+                  (e) =>
+                    e?.sizes?.includes(selectedSize) ||
+                    selectedSize === -1 ||
+                    selectedSize === ""
+                )
+                ?.map((e, index) => (
                   <button
-                    key={index}
                     onClick={() => {
-                      if (size == selectedSize) {
-                        setselectedSize(-1);
+                      if (e?.color === selectedColor) {
+                        setselectedColor(-1);
                         return;
                       }
-                      setselectedSize(size);
+                      setselectedColor(e?.color);
                     }}
-                    className={`${size == selectedSize
-                      ? "border-none bg-mainColor text-white"
-                      : "border-mainColor border-[1.5px]"
-                      }  font-medium  active:border-none active:bg-mainColor active:text-white p-2 rounded-sm`}
-                  >
-                    {size}
-                  </button>
-                ))
-              )}
-          </div>
-          <div className="flex gap-2">
-            {product?.photos
-              ?.filter(
-                (e) => e?.sizes?.includes(selectedSize) || selectedSize == -1
-              )
-              ?.map((e, index) => (
-                <button
-                  onClick={() => {
-                    if (e?.color == selectedColor) {
-                      setselectedColor(-1);
-                      return;
-                    }
-                    setselectedColor(e?.color);
-                  }}
-                  key={index}
-                  style={{ backgroundColor: e?.color }}
-                  className={`rounded-full ${selectedColor == e?.color ? "ring-4" : ""
+                    key={index}
+                    style={{ backgroundColor: e?.color }}
+                    className={`rounded-full ${
+                      selectedColor === e?.color ? "ring-4" : ""
                     } w-7 h-7`}
-                ></button>
-              ))}
-          </div>
+                  ></button>
+                ))}
+            </div>
+          )}
           <div className="flex border w-fit">
             <button
               onClick={() => {
@@ -223,18 +255,12 @@ export default function Product({ product }) {
                       price: product?.price,
                       maxQuntity: product?.quntity,
                       quntity,
-                      thumbanil:
-                        product?.photos?.[
-                          product?.photos?.findIndex(
-                            (e) => e?.color == selectedColor
-                          )
-                        ]?.photos?.[
-                        product?.photos?.[
-                          product?.photos?.findIndex(
-                            (e) => e?.color == selectedColor
-                          )
-                        ]?.sizes?.findIndex((size) => size == selectedSize)
-                        ],
+                      thumbanil: product?.photos?.find(
+                        (e) =>
+                          e?.color === selectedColor &&
+                          (e?.sizes?.includes(selectedSize) ||
+                            (selectedSize === "" && !e?.sizes?.length))
+                      )?.photos?.[0],
                       photos: product?.photos,
                       color: selectedColor,
                       size: selectedSize,
@@ -264,18 +290,12 @@ export default function Product({ product }) {
                       price: product?.price,
                       maxQuntity: product?.quntity,
                       quntity,
-                      thumbanil:
-                        product?.photos?.[
-                          product?.photos?.findIndex(
-                            (e) => e?.color == selectedColor
-                          )
-                        ]?.photos?.[
-                        product?.photos?.[
-                          product?.photos?.findIndex(
-                            (e) => e?.color == selectedColor
-                          )
-                        ]?.sizes?.findIndex((size) => size == selectedSize)
-                        ],
+                      thumbanil: product?.photos?.find(
+                        (e) =>
+                          e?.color === selectedColor &&
+                          (e?.sizes?.includes(selectedSize) ||
+                            (selectedSize === "" && !e?.sizes?.length))
+                      )?.photos?.[0],
                       photos: product?.photos,
                       color: selectedColor,
                       size: selectedSize,
@@ -308,8 +328,9 @@ export default function Product({ product }) {
                 معلومات المنتج
               </button>
               <FaAngleDown
-                className={`${isShowDescription ? "rotate-180" : ""
-                  } absolute left-3 top-1/2 -translate-y-1/2`}
+                className={`${
+                  isShowDescription ? "rotate-180" : ""
+                } absolute left-3 top-1/2 -translate-y-1/2`}
               />
             </div>
             {isShowDescription && <p>{product?.description}</p>}

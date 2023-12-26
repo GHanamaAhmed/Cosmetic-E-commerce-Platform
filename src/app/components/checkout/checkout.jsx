@@ -51,9 +51,6 @@ export default function Checkout() {
     Axios.get("/cities/wilaya")
       .then((res) => setWilayas(res.data))
       .catch((err) => console.error(err));
-    // return () => {
-    //   dispatch(emptyBasket());
-    // };
   }, []);
   useEffect(() => {
     console.log(wilaya);
@@ -124,10 +121,6 @@ export default function Checkout() {
       webhook_url: "https://crowinc.free.beeceptor.com/",
       back_url: "https://orders/webhook",
       discount: 0,
-      // api_key:
-      //   "api_uaxvP7R6F1to33NUoNiyXCiWLuGpKuB4KRi7iGvv04vbrnaCaUO0zb44H6caD6AR",
-      // api_secret:
-      //   "secret_ab3e4dec5faf044d61715eff7fa5126c1e605ca5920b69b9ea1b6851e73cbb52",
     };
     await axios
       .post("https://epay.chargily.com.dz/api/invoice", invoice, {
@@ -146,7 +139,7 @@ export default function Checkout() {
       })
       .catch((err) => console.error(err));
   };
-  const postOrder = () => {
+  const postOrder = (mode) => {
     if (isSend) return;
     setIsSend(true);
     const req = {
@@ -157,8 +150,8 @@ export default function Checkout() {
         price: e?.price,
         id: e?.id,
         quntity: e?.quntity,
-        size: e?.size,
-        color: e?.color,
+        size: e?.size || undefined,
+        color: e?.color || "",
       })),
       name: isAuthenticated
         ? `${user?.firstName} ${user?.lastName}`
@@ -196,7 +189,7 @@ export default function Checkout() {
           setIsSend(false);
           dispatch(multyUpdateBasket(res.data.error));
         } else {
-          // pay("EDAHABIA", res.data?.orderNumber);
+          pay(mode, res.data?.orderNumber);
         }
       })
       .catch((err) => {
@@ -216,7 +209,6 @@ export default function Checkout() {
           fill
           className="z-0 brightness-50 blur-[0.5px]"
         />
-
         <p className="absolute z-50 text-3xl text-white bottom-5 right-5">
           {" "}
           الدفع النهائي{" "}
@@ -331,9 +323,7 @@ export default function Checkout() {
                 className="relative w-full cursor-default bg-transparent rounded-sm py-1.5 shadow-sm border border-mainColor focus:outline-none focus:border-blue-500"
                 aria-labelledby="listbox-label"
               >
-                <option value="" disabled>
-                  الولايات
-                </option>
+                <option value="">الولايات</option>
                 <optgroup label="Options">
                   {wilayas.map((e, i) => (
                     <option
@@ -362,9 +352,7 @@ export default function Checkout() {
                 className="relative w-full cursor-default bg-transparent rounded-sm py-1.5 shadow-sm border border-mainColor focus:outline-none focus:border-blue-500"
                 aria-labelledby="listbox-label"
               >
-                <option value="" disabled>
-                  البلديات
-                </option>
+                <option value="">البلديات</option>
                 <optgroup label="Options">
                   {baladias.map((e, i) => (
                     <option
@@ -378,7 +366,6 @@ export default function Checkout() {
               </select>
             </div>
           </div>
-
           <div className="flex flex-col gap w-full">
             <p className="font-extralight">عنوان السكن</p>
             <input
@@ -407,7 +394,26 @@ export default function Checkout() {
               className="relative w-full cursor-default rounded-sm py-1.5 pl-3 pr-1 shadow-sm border  border-mainColor focus:outline-none focus:border-blue-500"
             />
           </div>
-          <button onClick={() => postOrder("EDAHABIA")}>pay</button>
+         <div className="flex justify-around">
+         <button onClick={() => postOrder("EDAHABIA")}>
+            <Image
+              src={
+                "/img/algerie-poste-activer-desactiver-carte-edahabia-removebg-preview.png"
+              }
+              width={200}
+              height={100}
+            />
+          </button>
+          <button onClick={() => postOrder("CIB")}>
+            <Image
+              src={
+                "/img/cibEtDahabia-removebg-preview.png"
+              }
+              width={200}
+              height={100}
+            />
+            </button>
+         </div>
         </div>
       </div>
     </div>

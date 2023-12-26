@@ -1,12 +1,9 @@
-import Image from "next/image";
 import React, { useMemo } from "react";
 import { useAppSelector, useAppDispatch } from "@/app/hooks/reduxHooks";
 import Card from "./card";
 import { useRouter } from "@/app/libs/router-events/patch-router/router";
 import { changeIsOrder } from "@/app/redux/basketReducer";
-import { IoCloseOutline } from "react-icons/io5";
-import { IoIosCloseCircleOutline } from "react-icons/io";
-
+import { toasty } from "../toasty/toast";
 export default function Basket() {
   const { products } = useAppSelector((state) => state.basket);
   const dispatch = useAppDispatch();
@@ -40,6 +37,12 @@ export default function Basket() {
         </div>
         <button
           onClick={() => {
+            if (products?.length == 0 || some == 0)
+              return toasty("السلة فارغة", {
+                toastId: "addProduct",
+                autoClose: 5000,
+                type: "warning",
+              });
             dispatch(changeIsOrder(true));
             router.push("/checkout");
           }}

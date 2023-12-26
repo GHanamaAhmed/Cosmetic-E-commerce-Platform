@@ -1,5 +1,5 @@
 import Link from "next/link";
-import React, { memo, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { FiShoppingCart } from "react-icons/fi";
 import { Swiper, SwiperSlide, useSwiper } from "swiper/react";
 import { A11y, Navigation, Pagination, Autoplay } from "swiper/modules";
@@ -35,15 +35,13 @@ export default memo(function CardProject({
   const [swiper, setSwiper] = useState(null);
   const [selectedColor, setselectedColor] = useState(-1);
   const [selectedSize, setselectedSize] = useState(-1);
-  const swiper2 = useSwiper();
-  const { width } = useWidth();
   const [isSave, setIsSave] = useState(save || false);
   const dispatch = useAppDispatch();
   const router = useRouter();
   const toggleSave = (e) => {
     e.stopPropagation();
     e.preventDefault();
-    if (selectedSize == -1 || selectedColor == -1) {
+    if (selectedSize === -1 || selectedColor === -1) {
       toasty("اختر الحجم و اللون اولا", {
         toastId: "addProduct",
         autoClose: 5000,
@@ -58,12 +56,12 @@ export default memo(function CardProject({
         price: promotion && isShowPromotion ? promotion : price,
         quntity: 1,
         thumbanil:
-          photos?.[photos?.findIndex((e) => e?.color == selectedColor)]
-            ?.photos?.[
-          photos?.[
-            photos?.findIndex((e) => e?.color == selectedColor)
-          ]?.sizes?.findIndex((size) => size == selectedSize)
-          ],
+          photos?.find(
+            (e) =>
+              e?.color === selectedColor &&
+              (e?.sizes?.includes(selectedSize) ||
+                (selectedSize === "" && !e?.sizes?.length))
+          )?.photos?.[0] || thumbanil,
         photos,
         maxQuntity: quntity,
         size: selectedSize,
@@ -80,13 +78,28 @@ export default memo(function CardProject({
       setIsSave(false);
     }, 1000);
   };
+  useEffect(() => {
+    if (photos?.[0]?.color === "" || photos?.[0]?.color === undefined) {
+      setselectedColor("");
+    }
+  }, [photos]);
+  useEffect(() => {
+    if (
+      photos
+        ?.filter((e) => e?.color === selectedColor || selectedColor === -1)
+        ?.every((e) => !e.sizes?.length)
+    ) {
+      setselectedSize("");
+    }
+  }, [selectedColor]);
   return (
     <div className="rounded-md w-[94%] max-w-[280px] h-[400px] overflow-hidden flex shadow-2xl flex-col  justify-between  items-center">
       <div className="relative h-full w-full max-h-[75%] img-project">
         <button
           onClick={toggleSave}
-          className={`rounded-full z-10 p-2 absolute right-2 top-2 ${!isSave ? "bg-white" : "bg-scandaryColor"
-            }`}
+          className={`rounded-full z-10 p-2 absolute right-2 top-2 ${
+            !isSave ? "bg-white" : "bg-scandaryColor"
+          }`}
         >
           {!isSave ? (
             <LuShoppingCart size={15} className={`stroke-basketColor`} />
@@ -115,78 +128,91 @@ export default memo(function CardProject({
               onClick={() => router.push(`../product/${id}`)}
             >
               {photos
-                ?.filter((e) => e?.color == selectedColor || selectedColor == -1)
-                ?.map((e, index) => selectedColor == -1 ? (
-                  <SwiperSlide key={index} className="w-full relative h-full">
-                    <Image
-
-                      fill
-                      crossOrigin="anonymous"
-                      className="h-full w-full object-cover"
-                      src={e?.photos?.[0]}
-                      alt=""
-                    />
-                  </SwiperSlide>
-                ) : (
-                  e?.photos?.map((photo, index) => (
+                ?.filter(
+                  (e) => e?.color === selectedColor || selectedColor === -1
+                )
+                ?.map((e, index) =>
+                  selectedColor === -1 ? (
                     <SwiperSlide key={index} className="w-full relative h-full">
                       <Image
                         fill
                         crossOrigin="anonymous"
                         className="h-full w-full object-cover"
-                        src={photo}
+                        src={e?.photos?.[0]}
                         alt=""
                       />
                     </SwiperSlide>
-                  ))
-                )
+                  ) : (
+                    e?.photos?.map((photo, index) => (
+                      <SwiperSlide
+                        key={index}
+                        className="w-full relative h-full"
+                      >
+                        <Image
+                          fill
+                          crossOrigin="anonymous"
+                          className="h-full w-full object-cover"
+                          src={photo}
+                          alt=""
+                        />
+                      </SwiperSlide>
+                    ))
+                  )
                 )}
             </Swiper>
           </div>
         </div>
       </div>
-      <div className="w-11/12 h-1/2 flex flex-col justify-between pb-5 gap-1 pt-2  items-start">
+      <div className="w-11/12 flex flex-col justify-between pb-5 gap-1 pt-2  items-start">
         <div className="w-full flex justify-between">
-          <p className="w-1/2 text-xl justify-self-center text-ellipsis overflow-hidden">
+          <p className="w-full text-xl justify-self-center text-ellipsis overflow-hidden">
             {name}
           </p>
         </div>
-        <Swiper
-          slidesPerView={"auto"}
-          spaceBetween={10}
-          autoHeight={true}
-          navigation={{ prevEl: ".prev", nextEl: ".next" }}
-          modules={[Navigation]}
-          className="w-full shadow-[inset_4px_0px_8px_0px_#edf2f7] rounded-lg "
-        >
-          {photos
-            .filter((e) => e?.color == selectedColor || selectedColor == -1)
-            ?.map((e) =>
-              e?.sizes?.map((size, index) => (
-                <SwiperSlide className="swiper-card " key={index}>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      if (selectedSize == size) {
-                        setselectedSize(-1);
-                        return;
-                      }
-                      setselectedSize(size);
-                    }}
-                    className={`${size == selectedSize
-                      ? "border-none bg-mainColor text-white"
-                      : "border-mainColor border-[1.5px]"
+        {photos?.filter(
+          (e) => e?.color === selectedColor || selectedColor === -1
+        )?.length > 0 && (
+          <Swiper
+            slidesPerView={"auto"}
+            spaceBetween={10}
+            autoHeight={true}
+            navigation={{ prevEl: ".prev", nextEl: ".next" }}
+            modules={[Navigation]}
+            className="w-full shadow-[inset_4px_0px_8px_0px_#edf2f7] rounded-lg"
+          >
+            {photos
+              ?.filter(
+                (e) => e?.color === selectedColor || selectedColor === -1
+              )
+              ?.map((e) =>
+                e?.sizes?.map((size, index) => (
+                  <SwiperSlide className="swiper-card " key={index}>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (selectedSize === size) {
+                          setselectedSize(-1);
+                          return;
+                        }
+                        setselectedSize(size);
+                      }}
+                      className={`${
+                        size === selectedSize
+                          ? "border-none bg-mainColor text-white"
+                          : "border-mainColor border-[1.5px]"
                       }  font-medium active:border-none active:bg-mainColor active:text-white p-1 m-1 rounded-sm`}
-                  >
-                    {size}
-                  </button>
-                </SwiperSlide>
-              ))
-            )}
-        </Swiper>
-        <div className="flex w-full justify-normal gap-4 items-center">
-          <p className="inline font-semibold text-solidHeading">الالوان: </p>
-          {photos?.[0]?.color != "#" && (
+                    >
+                      {size}
+                    </button>
+                  </SwiperSlide>
+                ))
+              )}
+          </Swiper>
+        )}
+        {photos?.[0]?.color !== "" && (
+          <div className="flex w-full justify-normal gap-4 items-center">
+            <p className="inline font-semibold text-solidHeading">الالوان: </p>
+
             <Swiper
               slidesPerView={"auto"}
               spaceBetween={10}
@@ -195,14 +221,17 @@ export default memo(function CardProject({
             >
               {photos
                 ?.filter(
-                  (e) => e?.sizes?.includes(selectedSize) || selectedSize == -1
+                  (e) =>
+                    e?.sizes?.includes(selectedSize) ||
+                    selectedSize === -1 ||
+                    selectedSize == []
                 )
                 ?.map((e, index) => (
                   <SwiperSlide key={index} className="swiper-card ">
                     <button
                       onClick={(el) => {
                         el.stopPropagation();
-                        if (e?.color == selectedColor) {
+                        if (e?.color === selectedColor) {
                           setselectedColor(-1);
                           return;
                         }
@@ -210,14 +239,15 @@ export default memo(function CardProject({
                       }}
                       key={index}
                       style={{ backgroundColor: e?.color }}
-                      className={`rounded-full  ${selectedColor == e?.color ? "ring-4" : ""
-                        } z-50 w-6 h-6`}
+                      className={`rounded-full  ${
+                        selectedColor === e?.color ? "ring-4" : ""
+                      } z-50 w-6 h-6`}
                     ></button>
                   </SwiperSlide>
                 ))}
             </Swiper>
-          )}
-        </div>
+          </div>
+        )}
         <div className="flex justify-between w-full">
           <div className="flex items-center gap-2">
             <button
@@ -232,14 +262,12 @@ export default memo(function CardProject({
                       price: price,
                       maxQuntity: quntity,
                       quntity: 1,
-                      thumbanil:
-                        photos?.[
-                          photos?.findIndex((e) => e?.color == selectedColor)
-                        ]?.photos?.[
-                        photos?.[
-                          photos?.findIndex((e) => e?.color == selectedColor)
-                        ]?.sizes?.findIndex((size) => size == selectedSize)
-                        ],
+                      thumbanil: photos?.find(
+                        (e) =>
+                          e?.color === selectedColor &&
+                          (e?.sizes?.includes(selectedSize) ||
+                            (selectedSize === "" && !e?.sizes?.length))
+                      )?.photos?.[0],
                       photos,
                       color: selectedColor,
                       size: selectedSize,
@@ -275,4 +303,4 @@ export default memo(function CardProject({
       </div>
     </div>
   );
-})
+});

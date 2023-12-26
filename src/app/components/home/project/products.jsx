@@ -27,7 +27,7 @@ export default function Project({
           setIsMoreLoading(false);
           res.data.products?.length &&
             setProducts((prev) => [...prev, ...res.data.products]);
-        }, 1000);
+        }, 500);
         setMin((prev) => res.data.products?.length + prev);
         setTypes(res.data?.types);
         setCount(res.data?.count);
@@ -38,7 +38,6 @@ export default function Project({
       });
   };
   useEffect(() => {
-    console.log(initialData);
     setProducts(initialData?.products)
     setCount(initialData?.count)
     setMin(initialData?.products?.length)
