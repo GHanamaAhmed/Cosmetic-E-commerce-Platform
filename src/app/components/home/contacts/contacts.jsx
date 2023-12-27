@@ -3,20 +3,12 @@ import { FaFacebookF } from "react-icons/fa6";
 import { FaInstagram } from "react-icons/fa";
 import { Axios } from "@/app/libs/axios";
 export default async function Contacts() {
-  const infoAdmin  = (await Axios.get("/info")).data;
+  const infoAdmin = (await Axios.get("/info")).data;
   return (
     <div className="flex flex-col w-full items-center justify-center mt-6 mb-3 py-2">
       <div className="w-10/12 flex flex-col md:flex-row md:items-center md:justify-between">
         <img src="./img/logo 2.svg" alt="" width={90} />
         <div className="flex flex-col gap-2 md:gap-4 md:flex-row">
-          <div className="flex gap-2 md:gap-10 w-full justify-between">
-            <p className="text-solidHeading dark:text-lightContent">
-              {infoAdmin?.email}
-            </p>
-            <p className="text-solidHeading dark:text-lightContent">
-              {infoAdmin?.phone}
-            </p>
-          </div>
           {(infoAdmin?.facebook || infoAdmin?.instagram) && (
             <ul className=" flex flex-row-reverse gap-4">
               {infoAdmin?.facebook && (

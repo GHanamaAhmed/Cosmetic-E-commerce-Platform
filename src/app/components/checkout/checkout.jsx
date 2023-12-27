@@ -13,8 +13,7 @@ export default function Checkout() {
   const { products, order } = useAppSelector((state) => state.basket);
   const { user, isAuthenticated } = useAppSelector((state) => state.account);
   const [shipping, setShipping] = useState(0);
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [adress, setAdress] = useState("");
   const [phone, setPhone] = useState("");
@@ -24,9 +23,9 @@ export default function Checkout() {
   const [isLading, setIsLoading] = useState(true);
   const [isSend, setIsSend] = useState(false);
   const [wilayas, setWilayas] = useState([]);
-  const [wilaya, setWilaya] = useState("adrar");
+  const [wilaya, setWilaya] = useState({});
   const [baladias, setBaladias] = useState([]);
-  const [baladia, setBaladia] = useState("adrar");
+  const [baladia, setBaladia] = useState({});
   const [delivery, setDelivery] = useState("deleveryAgency");
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -37,8 +36,7 @@ export default function Checkout() {
     );
   }, [products]);
   useEffect(() => {
-    setFirstName(user?.firstName);
-    setLastName(user?.lastName);
+    setName(user?.firstName + " " + user?.lastName);
     setEmail(user?.email);
     setPhone(user?.phone);
   }, [user]);
@@ -53,10 +51,10 @@ export default function Checkout() {
       .catch((err) => console.error(err));
   }, []);
   useEffect(() => {
-    console.log(wilaya);
-    Axios.get(`/cities/wilaya/${wilaya?.id}`)
-      .then((res) => setBaladias(res.data))
-      .catch((err) => console.error(err));
+    wilaya &&
+      Axios.get(`/cities/wilaya/${wilaya?.id}`)
+        .then((res) => setBaladias(res.data))
+        .catch((err) => console.error(err));
   }, [wilaya]);
   useEffect(() => {
     try {
@@ -112,7 +110,7 @@ export default function Checkout() {
   const pay = async (mode, orderNumber) => {
     const invoice = {
       amount: 600,
-      client: `${firstName} ${lastName}`, // add a text field to allow the user to enter his name, or get it from a context api (depends on the project architecture)
+      client: `${name}`, // add a text field to allow the user to enter his name, or get it from a context api (depends on the project architecture)
       client_enail: email,
       mode,
       invoice_number: orderNumber,
@@ -153,9 +151,7 @@ export default function Checkout() {
         size: e?.size || undefined,
         color: e?.color || "",
       })),
-      name: isAuthenticated
-        ? `${user?.firstName} ${user?.lastName}`
-        : firstName,
+      name: isAuthenticated ? `${user?.firstName} ${user?.lastName}` : name,
       coupon: coupon,
       adress: adress,
       phone: phone,
@@ -202,7 +198,7 @@ export default function Checkout() {
       });
   };
   return (
-    <div className="w-full h-full flex flex-col items-center pt-[75px] gap-10">
+    <div className="w-full h-full flex flex-col items-center  pt-[55px] md:pt-[75px] gap-10">
       <div className="relative w-[98%] h-36   ">
         <Image
           src="/img/headerimg.jpg"
@@ -296,8 +292,9 @@ export default function Checkout() {
           <div className="flex flex-col w-full">
             <p className="font-extralight">الاسم</p>
             <input
-              value={firstName}
-              onChange={(e) => setFirstName(e?.currentTarget?.value)}
+              disabled={isAuthenticated}
+              value={name}
+              onChange={(e) => setName(e?.currentTarget?.value)}
               type="text"
               className="relative w-full cursor-default rounded-sm py-1.5 pl-3 pr-1 shadow-sm border  border-mainColor focus:outline-none focus:border-blue-500 "
             />
@@ -305,6 +302,7 @@ export default function Checkout() {
           <div className="flex flex-col gap w-full">
             <p className="font-extralight">الايميل</p>
             <input
+              disabled={isAuthenticated}
               value={email}
               onChange={(e) => setEmail(e?.currentTarget?.value)}
               type="email"
@@ -318,7 +316,6 @@ export default function Checkout() {
                   const selectedValue = JSON.parse(e.currentTarget.value);
                   setWilaya({ id: selectedValue.id, name: selectedValue.name });
                   setBaladia(null);
-                  console.log(selectedValue.name); // or perform other actions based on selection
                 }}
                 className="relative w-full cursor-default bg-transparent rounded-sm py-1.5 shadow-sm border border-mainColor focus:outline-none focus:border-blue-500"
                 aria-labelledby="listbox-label"
@@ -394,26 +391,24 @@ export default function Checkout() {
               className="relative w-full cursor-default rounded-sm py-1.5 pl-3 pr-1 shadow-sm border  border-mainColor focus:outline-none focus:border-blue-500"
             />
           </div>
-         <div className="flex justify-around w-full">
-         <button onClick={() => postOrder("EDAHABIA")}>
-            <Image
-              src={
-                "/img/algerie-poste-activer-desactiver-carte-edahabia-removebg-preview.png"
-              }
-              width={200}
-              height={100}
-            />
-          </button>
-          <button onClick={() => postOrder("CIB")}>
-            <Image
-              src={
-                "/img/cibEtDahabia-removebg-preview.png"
-              }
-              width={200}
-              height={100}
-            />
+          <div className="flex justify-around w-full">
+            <button onClick={() => postOrder("EDAHABIA")}>
+              <Image
+                src={
+                  "/img/algerie-poste-activer-desactiver-carte-edahabia-removebg-preview.png"
+                }
+                width={200}
+                height={100}
+              />
             </button>
-         </div>
+            <button onClick={() => postOrder("CIB")}>
+              <Image
+                src={"/img/cibEtDahabia-removebg-preview.png"}
+                width={200}
+                height={100}
+              />
+            </button>
+          </div>
         </div>
       </div>
     </div>

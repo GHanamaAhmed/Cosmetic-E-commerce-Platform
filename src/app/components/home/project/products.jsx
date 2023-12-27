@@ -7,9 +7,7 @@ import "swiper/css/navigation";
 import { useEffect, useRef, useState } from "react";
 import { fetchProducts } from "@/app/libs/products";
 import { useSearchParams } from "next/navigation";
-export default function Project({
-  initialData,
-}) {
+export default function Project({ initialData }) {
   const scrollContainerRef = useRef(null);
   const [isMoreLoading, setIsMoreLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -21,7 +19,11 @@ export default function Project({
   const searchParams = useSearchParams();
   const fetch = async () => {
     setIsMoreLoading(true);
-    await fetchProducts(searchParams.get("s") || "", searchParams.get("type") || "الكل", min)
+    await fetchProducts(
+      searchParams.get("s") || "",
+      searchParams.get("type") || "الكل",
+      min
+    )
       .then((res) => {
         setTimeout(() => {
           setIsMoreLoading(false);
@@ -38,25 +40,21 @@ export default function Project({
       });
   };
   useEffect(() => {
-    setProducts(initialData?.products)
-    setCount(initialData?.count)
-    setMin(initialData?.products?.length)
-    setTypes(initialData?.types)
-  }, [initialData])
+    setProducts(initialData?.products);
+    setCount(initialData?.count);
+    setMin(initialData?.products?.length);
+    setTypes(initialData?.types);
+  }, [initialData]);
   const more = () => {
     fetch();
   };
 
   const handleScroll = () => {
-    console.log("1");
     if (!isMoreLoading) {
-      console.log("2");
       if (
         window.innerHeight + window.scrollY >=
         document.documentElement.offsetHeight
       ) {
-        console.log("3");
-        console.log("4");
         more();
       }
     }
@@ -68,15 +66,20 @@ export default function Project({
     return () => window.removeEventListener("scroll", handleScroll);
   }, [positionScroll]);
   return (
-    <div id="products" className="w-full h-full flex flex-col items-center gap-5">
+    <div
+      id="products"
+      className="w-full h-full flex flex-col items-center gap-5"
+    >
       <div className="w-[90%]">
         <TitleSection
           title={"المنتوجات"}
-          subTitle={"Things I’ve built so far"}
+          subTitle={
+            "استكشف تشكيلتنا الرائعة من منتجات التجميل."
+          }
         />
       </div>
       <div className="w-full h-full flex justify-center">
-        {(products.length > 0 && !isLoading) && (
+        {products.length > 0 && !isLoading && (
           <div
             ref={scrollContainerRef}
             className="w-[90%] h-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 justify-items-center gap-5"

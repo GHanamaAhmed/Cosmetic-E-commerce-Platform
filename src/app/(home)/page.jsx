@@ -5,7 +5,7 @@ import Project from "@/app/components/home/project/products";
 import { fetchProducts as fetchP } from "@/app/libs/products";
 export default memo(async function page({ searchParams }) {
   const initialData = await fetchP(searchParams?.s || "", searchParams?.type || "الكل").then((res) => res.data);
-  return <div className="w-full flex flex-col items-center pt-[75px] ">
+  return <div className="w-full flex flex-col items-center pt-[55px] md:pt-[75px] ">
     <div className="flex flex-col bg-caderSection justify-center items-center relative w-full">
       <img className="absolute w-full h-full object-cover" src="./img/amy-shamblen-xwM61TPMlYk-unsplash.jpg" alt="" />
       <div className="w-fit text-justify relative my-10 md:my-32 flex flex-col gap-0 md:gap-3  text-solidHeading text-xl font-bold md:text-4xl">

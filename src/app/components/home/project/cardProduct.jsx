@@ -283,18 +283,18 @@ export default memo(function CardProject({
                   });
                 }
               }}
-              className="border-b border-black text-sm font-hacen-tunisia"
+              className="text-sm font-hacen-tunisia py-2 px-4 text-white bg-green-500"
             >
-              الطلب
+             شراء
             </button>
           </div>
           <div className="flex items-center gap-2">
             {isShowPrice && !isShowPromotion && (
-              <p className="text-mainColor">{price} دج</p>
+              <p className="">{price} دج</p>
             )}
             {isShowPrice && isShowPromotion && (
               <div className="flex gap-2">
-                <p className="text-mainColor">{promotion} دج</p>
+                <p className="text-green-500">{promotion} دج</p>
                 <p className="text-gray-400 line-through">{price} دج</p>
               </div>
             )}

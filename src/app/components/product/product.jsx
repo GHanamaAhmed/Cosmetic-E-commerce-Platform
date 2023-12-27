@@ -139,11 +139,11 @@ export default function Product({ product }) {
         <div className="px-5 flex flex-col gap-3 w-full">
           <p className="text-solidHeading text-2xl">{product?.name}</p>
           {product?.showPrice && !product?.showPromotion && (
-            <p className="text-mainColor">{product?.price} دج</p>
+            <p className="text-green-500">{product?.price} دج</p>
           )}
           {product?.showPrice && product?.showPromotion && (
             <div className="flex gap-2">
-              <p className="text-mainColor">{product?.promotion} دج</p>
+              <p className="text-green-500">{product?.promotion} دج</p>
               <p className="text-gray-400 line-through">{product?.price} دج</p>
             </div>
           )}

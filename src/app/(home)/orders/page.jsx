@@ -6,7 +6,7 @@ import React from 'react'
 
 export default function page() {
   return (
-		<div className="w-full h-full flex flex-col-reverse md:flex-row-reverse justify-evenly items-center pt-[80px] gap-10 px-5">
+		<div className="w-full h-full flex flex-col-reverse md:flex-row-reverse justify-evenly items-center pt-[55px] md:pt-[75px]  gap-10 px-5">
 			<div className="w-full h-full flex flex-col justify-evenly items-center ">
 				 <Product/>  
 				<Del/>

@@ -10,7 +10,7 @@ export default async function page({ params: { productId } }) {
     (res) => res.data
   );
   return (
-    <div className="pt-[75px] ">
+    <div className=" pt-[55px] md:pt-[75px] ">
       <Product product={product} />
       <Recommendation
         type={product?.type}

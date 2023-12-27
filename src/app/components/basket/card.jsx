@@ -12,10 +12,12 @@ export default function Card({ product, index }) {
         <div className="grid grid-cols-2 px-4">
           <div className="flex flex-col gap-1">
             <p className="text-sm">{product?.name}</p>
-            <button
-              style={{ backgroundColor: product?.color }}
-              className={`rounded-full shadow-[inset_-0.5px_0.5px_3px_0px_#1a202c]  z-10 w-6 h-6`}
-            ></button>
+            {product?.color && (
+              <button
+                style={{ backgroundColor: product?.color }}
+                className={`rounded-full shadow-[inset_-0.5px_0.5px_3px_0px_#1a202c]  z-10 w-6 h-6`}
+              ></button>
+            )}
             <p className="text-sm">{product?.size}</p>
             <div className="flex border w-fit">
               <button
@@ -40,27 +42,16 @@ export default function Card({ product, index }) {
               </div>
               <button
                 onClick={() => {
-                  if (product?.color) {
-                    product?.quntity > 1 &&
-                      dispatch(
-                        updateBasket({
-                          index,
-                          product: {
-                            ...product,
-                            quntity: !product?.quntity
-                              ? 0
-                              : product?.quntity - 1,
-                          },
-                        })
-                      );
-                  } else {
-                    toasty("اختر اللون اولا", {
-                      position: "top-left",
-                      toastId: "selectColor",
-                      autoClose: 5000,
-                      type: "warning",
-                    });
-                  }
+                  product?.quntity > 1 &&
+                    dispatch(
+                      updateBasket({
+                        index,
+                        product: {
+                          ...product,
+                          quntity: !product?.quntity ? 0 : product?.quntity - 1,
+                        },
+                      })
+                    );
                 }}
                 className="px-2 py-0.5 lg:px-3 lg:py-2 border-r text-sm "
               >
