@@ -30,7 +30,7 @@ cd Cosmetic-E-commerce-Platform
 ### 2. Environment Configuration 🔧
 ```env
 REACT_APP_CHARGILY_APP_KEY="your_api_key_here"
-BASE_URL="http://localhost:4000/"
+BASE_URL="Backend Port"
 ```
 
 ### 3. Install Dependencies 📦
@@ -88,7 +88,7 @@ npm run build && npm start
 Apache License 2.0 - See [LICENSE](https://www.apache.org/licenses/LICENSE-2.0)
 
 ## Support 🆘
-📧 Email: [your@email.com]  
+📧 Email: ghanamaahmed@gmail.com
 📮 Issues: [GitHub Issues](https://github.com/GHanamaAhmed/Cosmetic-E-commerce-Platform/issues)
 
 ---
